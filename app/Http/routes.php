@@ -15,6 +15,10 @@
 
 Route::get('/', 'HomeController@index');
 Route::resource('inbox', 'InboxController');
+Route::resource('outbox', 'OutboxController');
+Route::resource('contact', 'ContactController');
+Route::resource('group', 'GroupController');
+Route::resource('sent', 'SentController');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

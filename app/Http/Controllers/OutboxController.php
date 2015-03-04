@@ -5,14 +5,9 @@ use sms\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use sms\Inbox;
+use sms\Outbox;
 
-class InboxController extends Controller {
-
-	function __construct() {
-		$this->middleware('auth');
-		if(!\Session::has('group')) \Session::put('group','On');
-	}
+class OutboxController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -21,8 +16,7 @@ class InboxController extends Controller {
 	 */
 	public function index()
 	{
-		$db = Inbox::listing();
-		return view('sms.inbox_list')->with('data',$db);
+		//
 	}
 
 	/**
@@ -51,13 +45,10 @@ class InboxController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($phone)
+	public function show($id)
 	{
-		if(\Request::ajax()) 
-		{
-			$data = Inbox::where('SenderNumber','like','%'.$phone)->get();
-			return \Response::json(['inbox'=>$data]);
-		}
+		$db = Outbox::destroy($id);
+			return $db;	
 	}
 
 	/**
@@ -68,14 +59,7 @@ class InboxController extends Controller {
 	 */
 	public function edit($id)
 	{
-		if ($id) {
-			\Session::put('group','On');
-		}
-		else
-		{
-			\Session::put('group', 'Off');
-		}
-		return redirect()->back();
+		//
 	}
 
 	/**
@@ -99,12 +83,9 @@ class InboxController extends Controller {
 	{
 		if(\Request::ajax()) 
 		{
-			$ids = explode(',', $id);
-			$db = \DB::table('inbox')->whereIn('ID', $ids)->delete();
+			$db = Outbox::destroy($id);
 			return $db;	
 		}
 	}
-
-
 
 }

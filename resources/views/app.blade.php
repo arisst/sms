@@ -36,6 +36,8 @@
 				<ul class="nav navbar-nav">
 					<li><a href="{{url('/')}}">Home</a></li>
 					<li><a href="{{url('inbox')}}">Inbox</a></li>
+					<li><a href="{{url('contact')}}">Contact</a></li>
+					{{-- <li><a href="{{url('sent')}}">Sent</a></li> --}}
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
@@ -54,12 +56,14 @@
 			</div>
 		</div>
 	</nav>
+	<script src="{{asset('js/jquery.min.js?v2.1.3')}}"></script>
+	<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
 
 	@yield('content')
 
 	<!-- Scripts -->
-	<script src="{{asset('js/jquery.min.js?v2.1.3')}}"></script>
 	<script src="{{asset('js/bootstrap.min.js?v3.3.1')}}"></script>
 	<script src="{{asset('js/sweet-alert.min.js')}}"></script>
+
 </body>
 </html>

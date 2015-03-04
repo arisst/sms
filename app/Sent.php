@@ -2,20 +2,15 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Inbox extends Model {
+class Sent extends Model {
 
-	protected $table = 'inbox';
-
-	public static function grouping()
-	{
-		return \DB::table('inbox_sent_outbox')->groupBy('hp')->get();
-	}
+	protected $table = 'sentitems';
 	
 	public static function listing($perpage = '')
 	{
 		if(\Session::get('group')=='Off')
 		{
-			$db = \DB::table('inbox');
+			$db = \DB::table('sentitems');
 		}
 		else
 		{
@@ -64,11 +59,6 @@ class Inbox extends Model {
 		}else{
 			return $db->get();
 		}
-	}
-
-	public static function conversation($hp)
-	{
-		return \DB::table('inbox_sent_outbox')->where('hp', '=', $hp)->orderBy('waktu','asc')->get();
 	}
 
 }
