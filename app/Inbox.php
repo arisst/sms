@@ -8,7 +8,11 @@ class Inbox extends Model {
 
 	public static function grouping()
 	{
-		return \DB::table('inbox_sent_outbox')->groupBy('hp')->get();
+		return \DB::table('view_conversation')
+					->select('view_conversation.*','pbk.Name')
+					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
+					->groupBy('hp')
+					->get();
 	}
 	
 	public static function listing($perpage = '')
@@ -68,7 +72,10 @@ class Inbox extends Model {
 
 	public static function conversation($hp)
 	{
-		return \DB::table('inbox_sent_outbox')->where('hp', '=', $hp)->orderBy('waktu','asc')->get();
+		return \DB::table('view_conversation')
+					->select('view_conversation.*','pbk.Name')
+					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
+					->where('hp', '=', $hp)->orderBy('waktu','asc')->get();
 	}
 
 }

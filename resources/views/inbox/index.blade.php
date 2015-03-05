@@ -1,5 +1,19 @@
 @extends('app')
 @section('content')
+<style>
+  .ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  * html .ui-autocomplete {
+    height: 200px;
+  }
+  </style>
 <body onload="Detail(window.location.hash.substring(1));">
 <div class="container">
 	<div class="row">
@@ -18,7 +32,7 @@
 						<div class="list-group">
 						@foreach($data as $value)
 						  <a id="l-{{$value->hp}}" href="#" onclick="Detail('{{$value->hp}}');" class="list-group-item">
-						    <p class="list-group-item-heading"><input name="cid[]" value="{{$value->hp}}" type="checkbox" class="cg"> {{$value->hp}}</p>
+						    <p class="list-group-item-heading"><input name="cid[]" value="{{$value->hp}}" type="checkbox" class="cg"> @if($value->Name)<b>{{$value->Name}}</b>@else{{$value->hp}}@endif</p>
 						    <p class="list-group-item-text">{{str_limit($value->isi, 60)}}</p>
 						  </a>
 						<?php $i++; ?>
@@ -76,6 +90,8 @@
 </div>
 
 <script type="text/javascript">
+
+//AUTOCOMPLETE
 	$(function() {
 		function split( val ) {
 	      return val.split( /,\s*/ );
@@ -106,7 +122,7 @@
 				select: function( event, ui ) {
 					var terms = split( this.value );
 			          terms.pop();
-			          terms.push( ui.item.value );
+			          terms.push( ui.item.label );
 			          // console.log(ui.item.value);
 			          terms.push( "" );
 			          this.value = terms.join( ", " );
@@ -114,6 +130,11 @@
 					return false;
 				}
 			})
+			.autocomplete( "instance" )._renderItem = function( ul, item ) {
+		      return $( "<li>" )
+		        .append( "<li class=\"list-group-item\" role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" href=\"#\">" + item.label + " (" + item.num + ")</a></li>" )
+		        .appendTo( ul );
+		    };
 	});
 
 	function checkAll(source) {
@@ -220,7 +241,9 @@
 					};
 			    	document.getElementById("detail").innerHTML = response;
 			    	// document.getElementById('l-'+phone).className = 'list-group-item active';
-			    	document.getElementById("title").innerHTML=data[0]['hp'];
+			    	var nama='';
+			    	if (data[0]['Name']) { nama=data[0]['Name']+" - " };
+			    	document.getElementById("title").innerHTML=nama+data[0]['hp'];
 			    	var myDiv = document.getElementById("description");
 					myDiv.scrollTop = myDiv.scrollHeight;
 			    	// document.getElementById("msg").focus();

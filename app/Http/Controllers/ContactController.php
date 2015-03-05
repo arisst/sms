@@ -41,22 +41,23 @@ class ContactController extends Controller {
 	{
 		if(\Request::ajax()) 
 		{
-			if($id==0)
+			/* Destination Autocomplete Response */
+			if($id==0) 
 			{
 				$term = \Input::get('term');
-				$db = Contact::where('Name','like',$term.'%')->get();
-				// dd($db);
+				$db = Contact::ListWithGroup($term);
 				$contact = [];
 				foreach ($db as $key) {
-					$contact[$key->ID] = ['label'=>$key->Name, 'id'=>$key->ID];
+					$contact[$key->ID] = ['label'=>$key->Name, 'id'=>$key->ID, 'num'=>$key->label];
 				}
 				return \Response::json($contact);
 			}
-			else
+
+			/* Detail contact response */
+			else 
 			{
 				$data = Contact::select('pbk.ID','pbk.Name','pbk.Number','pbk_groups.Name as GroupName')
 									->leftJoin('pbk_groups','pbk.GroupID','=','pbk_groups.ID')->where('pbk.ID',$id)->get();
-				// dd($data);
 				if($data){
 					return \Response::json($data);
 				}else{

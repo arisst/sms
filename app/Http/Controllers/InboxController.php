@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use sms\Inbox;
 use sms\Outbox;
 use sms\Contact;
+use sms\Group;
 
 class InboxController extends Controller {
 
@@ -40,16 +41,36 @@ class InboxController extends Controller {
 	{
 		$dst = \Input::get('destination');
 		$msg = \Input::get('message');
-		if(\Input::get('state')==0){
+		if(\Input::get('state')==0)
+		{
 			$e = array_map('trim',explode(',', $dst));
-			$contact = Contact::whereIn('Name',$e)->get();
-			foreach ($contact as $key) {
-				Outbox::create(['DestinationNumber'=>$key->Number, 'TextDecoded'=>$msg]);
+			foreach ($e as $key) 
+			{
+				if($key)
+				{
+					$contact = Contact::where('Name','=',$key)->first();
+					$group = Group::where('Name','=',$key)->first();
+					if($contact)
+					{
+						return Outbox::create(['DestinationNumber'=>$contact['Number'], 'TextDecoded'=>$msg]);
+					}
+					else
+					{
+						if($group)
+						{
+							return Outbox::SendToGroup($group->Name, $msg);
+						}
+						else
+						{
+							return Outbox::create(['DestinationNumber'=>$key, 'TextDecoded'=>$msg]);
+						}
+					}
+				}
 			}
 		}
 		else
 		{
-			Outbox::create(['DestinationNumber'=>$dst, 'TextDecoded'=>$msg]);
+			return Outbox::create(['DestinationNumber'=>$dst, 'TextDecoded'=>$msg]);
 		}
 
 	}
@@ -58,7 +79,6 @@ class InboxController extends Controller {
 	{
 		if(\Request::ajax()) 
 		{
-			// $data = Inbox::where('SenderNumber','like','%'.$phone)->get();
 			$data = Inbox::conversation($phone);
 			if($data){
 				return \Response::json($data);

@@ -9,4 +9,17 @@ class Outbox extends Model {
 	protected $fillable = ['DestinationNumber','TextDecoded'];
 	public $timestamps = false;
 
+	public static function SendToGroup($name, $text)
+	{
+		$data = \DB::table('pbk')
+					->select('pbk.Number')
+					->join('pbk_groups','pbk.GroupID','=','pbk_groups.ID')
+					->where('pbk_groups.Name','=',$name)
+					->get();
+
+		foreach ($data as $key) {
+			$db = self::create(['DestinationNumber'=>$key->Number, 'TextDecoded'=>$text]);
+		}
+		return $db;
+	}
 }
