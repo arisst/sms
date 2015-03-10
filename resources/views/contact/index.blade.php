@@ -1,7 +1,7 @@
 @extends('app')
 @section('content')
 
-<body onload="Detail(window.location.hash.substring(1));">
+<body onload="firstLoad(window.location.hash.substring(1))">
 <div class="container">
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
@@ -9,24 +9,26 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					Contact
+					<div class="pull-right">
+						<a class="btn-sm" title="Add new contact" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Add new</a>
+					</div>
 				</div>
 
 				<div class="panel-body">
-					<?php $i = 1; ?>
+					
 				<div class="row">
 					<div class="col-md-4">
-					<div style="height:500px;overflow-x:hidden;overflow-y:auto">
-						<div class="list-group">
-						@foreach($data as $value)
-						  <a id="l-{{$value->ID}}" href="#" onclick="Detail('{{$value->ID}}');" class="list-group-item">
-						    <p class="list-group-item-heading"><input name="cid[]" value="{{$value->ID}}" type="checkbox" class="cg"> <b>{{$value->Name}}</b></p>
-						    <p class="list-group-item-text">{{$value->Number}}</p>
-						  </a>
-						<?php $i++; ?>
-						@endforeach
+					<input type="search" id="search" class="form-control input-sm" placeholder="Search name or number">
+					<div id="listarea" style="height:470px;overflow-x:hidden;overflow-y:auto">
+						<div class="list-group" id="listcontact"></div>
+						<div id="pagination" align="center">
+						  <ul class="pagination pagination-sm">
+						    <li><a id="prev" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+						    <li><a id="next" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+						  </ul>
 						</div>
 					</div>
-					<a class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
+					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
 					</div>
 
 					<div class="col-md-8">
@@ -44,7 +46,7 @@
 									  <div class="form-group">
 									    <label for="number" class="col-sm-2 control-label">Number</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="number" class="form-control input-sm" id="number" placeholder="Number" required>
+									      <input type="text" name="number" class="form-control input-sm" id="number" value="{{Input::get('number')}}" placeholder="Number" required>
 									    </div>
 									  </div>
 									  <div class="form-group">
@@ -77,8 +79,38 @@
 </div>
 
 <script type="text/javascript">
+	/* ON FIRST LOAD */
+	function firstLoad (detail) {
+		getData();
+		detail = typeof detail !== 'undefined' ? detail : '';
+		Detail(detail);
+	}
+
+	/* READY FUNCTION */
+	$(document).ready(function(){
+		/* SEARCH */
+		$("#search").keyup(function(){
+			getData($(this).val());
+		});
+	});
+
+	/* PAGINATION */
+	var current_page = '';
+	var last_page = '';
+	$("#next").click(function(){
+		if(current_page<last_page){
+			getData('', current_page+1);
+		}
+	});
+	$("#prev").click(function(){
+		if(current_page>1){
+			getData('', current_page-1);
+		}
+	});
+
+	/* AUTOCOMPLETE */
 	$(function() {
-		$( "#group" ).autocomplete(
+		$("#group").autocomplete(
 		{
 			 source: "{{url('group')}}/0",
 			 select: function( event, ui ) {
@@ -89,14 +121,38 @@
 		})
 	});
 
+	/* CHECK FUNCTION */
 	function checkAll(source) {
+		// $("#checkdel").show();
 		checkboxes = document.getElementsByName('cid[]');
 		for(var i=0, n=checkboxes.length;i<n;i++) {
 		   checkboxes[i].checked = source.checked;
 		}
-		// document.getElementById("del").innerHTML = '<a href="#" onClick="Delete()">Delete data ini?</a>';
 	}
 
+	/* GET DATA FROM SERVER */
+	function getData (term,page) {
+		term = typeof term !== 'undefined' ? term : '';
+		page = typeof page !== 'undefined' ? page : 1;
+		$(document).bind("ajaxStart.mine", function() {
+			$("#listcontact").html('<img src="{{asset("img/loadsmall.gif")}}">');
+		});
+		$(document).bind("ajaxStop.mine", function() {
+			// alert('loaded');
+		});
+		$.get("{{url('contact')}}?page="+page+"&term="+term, function(data,status){
+			var res= '';
+			current_page = data['current_page'];
+			last_page = data['last_page'];
+			$.each(data['data'], function(i, item) {
+			    res += '<a id="l-'+item.ID+'" href="#" onclick="Detail('+item.ID+');" class="list-group-item"><p class="list-group-item-heading"><input name="cid[]" value="'+item.ID+'" type="checkbox" class="cg"> <b>'+item.Name+'</b></p><p class="list-group-item-text">'+item.Number+'</p></a>';
+			})
+			$("#listcontact").html(res);
+		});
+		$(document).unbind(".mine");
+	}
+
+	/* DELETE WITH CHECKLIST */
 	function Hapus(){
 		var checkboxes = document.getElementsByName('cid[]');
 		var vals = [];
@@ -114,19 +170,17 @@
 				showCancelButton: true,   
 				confirmButtonColor: "#DD6B55",   
 				confirmButtonText: "Yes, delete it!",   
-				closeOnConfirm: false }, 
+				closeOnConfirm: true }, 
 
 				function(){   
 					$.post("{{url('contact')}}/"+vals,
 					{
-						id:vals,
-						_method:"DELETE",
-						_token:"{{csrf_token()}}"
+						id:vals, _method:"DELETE",	_token:"{{csrf_token()}}"
 					},
 					function(data,status){
 						if(status=='success'){
 					    	Detail('');
-					    	location.reload();
+					    	getData();
 						}
 					});
 				});
@@ -135,41 +189,19 @@
 		}
 	}
 
-	function deleteOutbox (value) {
-			swal({
-				title: "Are you sure?",
-				text: "You will not be able to recover this data!",   
-				type: "warning",   
-				showCancelButton: true,   
-				confirmButtonColor: "#DD6B55",   
-				confirmButtonText: "Yes, delete it!",   
-				closeOnConfirm: true }, 
-
-				function(){   
-					$.post("{{url('outbox')}}/"+value,
-					{
-						id:value,
-						_method:"DELETE",
-						_token:"{{csrf_token()}}"
-					},
-					function(data,status){
-						if(status=='success'){
-					    	// swal("Deleted!", data+" data has been deleted.", "success");
-					    	Detail(window.location.hash.substring(1));
-						}
-					});
-				});		
-	}
-
+	/* GET DETAIL */
 	function Detail(id)
 		{
 			if(id){
+				$("[id^='l-']").removeClass('active');
+				$("#l-"+id).addClass('active');
 			    $(document).ajaxStart(function(){
-			        document.getElementById("title").innerHTML='Loading...';
+					$("#title").html('<img src="{{asset("img/loadsmall.gif")}}">');
+			    	$("#submit-button").attr('disabled','disabled');
 			    });
 			    $(document).ajaxError(function(event, jqxhr, settings, exception) {
 				    if (jqxhr.status==401) {
-				        location.reload();
+				        location.reload(false);
 				    }
 				});
 				$.get("{{url('contact')}}/"+id, function(data,status){
@@ -177,27 +209,37 @@
 					$('input[name="name"]').val(data[0]['Name']);
 					$('input[name="number"]').val(data[0]['Number']);
 					$('input[name="group"]').val(data[0]['GroupName']);
-			    	document.getElementById("submit-button").innerHTML = 'Save';
+			    	$("#submit-button").html('Save');
+			    	$("#submit-button").removeAttr('disabled');
 			    	$('#submit-button').attr('onclick', 'Add('+id+');');
-			    	document.getElementById("title").innerHTML = data[0]['Name'];
+				    $('#title').html(data[0]['Name']);
 				});
 			}else{
-			    document.getElementById("title").innerHTML='Add new contact';
+			    $('#title').html('Add new contact');
+			    $('input[name="name"]').val('');
+				$('input[name="number"]').val('');
+				$('input[name="group"]').val('');
+				$("#submit-button").html('Add');
+		    	$("#submit-button").removeAttr('disabled');
+		    	$('#submit-button').attr('onclick', 'Add();');
 			}
 		}
 
+	/* ADD AND EDIT TRANSACTION */
 	function Add(id) 
 	{
 		var edit = method = '';
 		if(id){ 
-			edit = id;
+			edit = '/'+id;
 			method = 'PUT'; 
+		}else{
+			method = 'POST'; 
 		}
 		var nama = $("input#name").val();
 		var nomor = $("input#number").val();
 		var group = $("input#group").val();
 		if(nama && nomor){
-			$.post("{{url('contact')}}/"+edit,
+			$.post("{{url('contact')}}"+edit,
 			{
 				name:nama,
 				number:nomor,
@@ -207,8 +249,12 @@
 			},
 			function(data,status){
 				if(status=='success'){
-			    	window.location.href = "{{url('contact')}}#"+data['id'];
-			    	location.reload();
+					if(!id){
+						$('input[name="name"]').val('');
+						$('input[name="number"]').val('');
+						$('input[name="group"]').val('');
+					}
+			  		firstLoad(data.id);
 				}
 			});
 		}

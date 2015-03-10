@@ -33,7 +33,11 @@ class InboxController extends Controller {
 
 	public function create()
 	{
-		return view('inbox.form');
+		$id = '085259,081234';
+		$ids = explode(',', $id);
+		$ida = array_map(function($str){return str_replace('0', '+62', $str);}, $ids);
+		
+		return $ida;
 	}
 
 
@@ -110,9 +114,11 @@ class InboxController extends Controller {
 		if(\Request::ajax()) 
 		{
 			$ids = explode(',', $id);
+			$ida = array_map(function($str){return str_replace('0', '+62', $str);}, $ids);
 			if(\Session::get('group')=='On'){
 				$db = \DB::table('inbox')->whereIn('SenderNumber', $ids)->delete();
 				$db = \DB::table('sentitems')->whereIn('DestinationNumber', $ids)->delete();
+				$db = \DB::table('sentitems')->whereIn('DestinationNumber', $ida)->delete();
 			}else
 			{
 				$db = \DB::table('inbox')->whereIn('ID', $ids)->delete();

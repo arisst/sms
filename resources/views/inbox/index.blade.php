@@ -20,8 +20,12 @@
 		<div class="col-md-10 col-md-offset-1">
 
 			<div class="panel panel-default">
-				<div class="panel-heading">Inbox <?php $gr = (Session::get('group')=='Off') ? '1' : '0' ; ?>
-					<a href="{{url('inbox/'.$gr.'/edit')}}" class="pull-right btn btn-default btn-sm <?php if(!$gr) echo 'active'; ?>" >Grouping : {{Session::get('group')}}</a>
+				<div class="panel-heading">Inbox 
+					<div class="pull-right">
+						<a class="btn-sm" title="Compose new message" href="inbox"><span style="color:green" class="glyphicon glyphicon-envelope"></span>Compose</a>
+						<?php $gr = (Session::get('group')=='Off') ? '1' : '0' ; ?>
+							<a href="{{url('inbox/'.$gr.'/edit')}}" class="btn btn-default btn-sm <?php if(!$gr) echo 'active'; ?>" >Grouping : {{Session::get('group')}}</a>
+					</div>
 				</div>
 
 				<div class="panel-body">
@@ -31,10 +35,14 @@
 					<div style="height:500px;overflow-x:hidden;overflow-y:auto">
 						<div class="list-group">
 						@foreach($data as $value)
-						  <a id="l-{{$value->hp}}" href="#" onclick="Detail('{{$value->hp}}');" class="list-group-item">
-						    <p class="list-group-item-heading"><input name="cid[]" value="{{$value->hp}}" type="checkbox" class="cg"> @if($value->Name)<b>{{$value->Name}}</b>@else{{$value->hp}}@endif</p>
+						  <div id="l-{{$value->hp}}"  onclick="Detail('{{$value->hp}}');" class="list-group-item" style="cursor:pointer;">
+						    <p class="list-group-item-heading"><input name="cid[]" value="{{$value->hp}}" type="checkbox" class="cg"> @if($value->Name){{$value->Name}}@else{{$value->hp}}
+						    <a class="pull-right" title="Add to contact" href="{{url('contact').'?number='.$value->hp}}"><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a>
+						    @endif 
+						    {{-- <a class="pull-right" title="Delete conversation" href="#add#{{$value->hp}}"><span style="color:red" class="glyphicon glyphicon-trash"></span></a> --}}
+						    </p>
 						    <p class="list-group-item-text">{{str_limit($value->isi, 60)}}</p>
-						  </a>
+						  </div>
 						<?php $i++; ?>
 						@endforeach
 						</div>
@@ -60,7 +68,7 @@
 									  <div class="form-group">
 									    <label for="text" class="col-sm-2 control-label">Text</label>
 									    <div class="col-sm-10">
-									      <textarea id="msg0" class="form-control" id="text" placeholder="Text" required></textarea>
+									      <textarea id="msg0" class="form-control" id="text" placeholder="Text" required>{{Input::get('text')}}</textarea>
 									    </div>
 									  </div>
 									  <div class="form-group">
@@ -183,7 +191,7 @@
 		}
 	}
 
-	function deleteOutbox (value) {
+	function deleteId(tabel,value) {
 			swal({
 				title: "Are you sure?",
 				text: "You will not be able to recover this data!",   
@@ -194,7 +202,7 @@
 				closeOnConfirm: true }, 
 
 				function(){   
-					$.post("{{url('outbox')}}/"+value,
+					$.post(tabel+"/"+value,
 					{
 						id:value,
 						_method:"DELETE",
@@ -212,13 +220,15 @@
 	function Detail(phone)
 		{
 			if(phone){
+				$("[id^='l-']").removeClass('active');
+				$("#l-"+phone).addClass('active');
 			    $("#form0").hide();
 			    $(document).ajaxStart(function(){
 			        document.getElementById("title").innerHTML='Loading...';
 			    });
 			    $(document).ajaxError(function(event, jqxhr, settings, exception) {
 				    if (jqxhr.status==401) {
-				        location.reload();
+				        location.reload(false);
 				    }
 				});
 				$.get("{{url('inbox')}}/"+phone, function(data,status){
@@ -226,18 +236,22 @@
 				    var response = '';
 				    var style = '';
 				    var tag = '';
+				    var btn0 = '';
 				    var btn = '';
 					for (var i = 0; i < data.length; i++) {
+						btn0 = ' <a title="Forward this message" href="?text='+encodeURIComponent(data[i]['isi'])+'"><span class="glyphicon glyphicon-arrow-right"></span></a>';
 						if(data[i]['tabel']=='inbox'){
 							style = "alert-success pull-left";
+							btn = btn0;
 						}else if(data[i]['tabel']=='sent'){
 							style = "alert-info pull-right";
+							btn = btn0;
 						}else{
 							style = "alert-warning pull-right";
-							btn = ' <a class="pull-right" onclick="deleteOutbox('+data[i]['id']+')" href="#'+phone+'"><span class="glyphicon glyphicon-trash"></span></a>';
+							btn = btn0+' <a title="Delete" onclick="deleteId(\'outbox\', '+data[i]['id']+')" href="#'+phone+'"><span style="color:red" class="glyphicon glyphicon-trash"></span></a>';
 						}
-						if (data[i]['udh']!='') {tag='span';}else{tag='p';}
-						response +='<'+tag+' class="col-md-8 alert '+style+'">'+data[i]['isi']+'<br><small>'+data[i]['waktu']+'</small>'+btn+'</'+tag+'>';
+						if (data[i]['udh']!='') {tag='div';}else{tag='div';}
+						response +='<'+tag+' class="col-md-8 alert '+style+'">'+data[i]['isi']+'<br><small>'+data[i]['waktu']+'</small><div class="pull-right">'+btn+'</div></'+tag+'>';
 					};
 			    	document.getElementById("detail").innerHTML = response;
 			    	// document.getElementById('l-'+phone).className = 'list-group-item active';
@@ -292,8 +306,13 @@
 					},
 					function(data,status){
 						if(status=='success'){
-							$("textarea#msg").val('');
-					    	Detail(window.location.hash.substring(1));
+							if(state){
+								$("textarea#msg").val('');
+						    	Detail(window.location.hash.substring(1));
+						    }else{
+						    	$("input#destination").val('');
+						    	$("textarea#msg0").val('');
+						    }
 						}
 					});
 				});

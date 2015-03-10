@@ -15,8 +15,16 @@ class ContactController extends Controller {
 
 	public function index()
 	{
-		$db = Contact::all();
-		return view('contact.index')->with('data',$db);
+		if(\Request::ajax()) 
+		{
+			$term = \Input::get('term');
+			$db = Contact::where('Name','like','%'.$term.'%')->orWhere('Number','like','%'.$term.'%')->orderBy('Name','asc')->paginate();
+			return \Response::json($db);
+		}
+		else
+		{
+			return view('contact.index');
+		}
 	}
 
 	public function create()

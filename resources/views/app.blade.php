@@ -10,7 +10,7 @@
 	<link href="{{asset('css/sweet-alert.css')}}" rel="stylesheet">
 
 	<!-- Fonts -->
-	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+	{{-- <link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'> --}}
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -29,14 +29,20 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/">SMS</a>
+				<a class="navbar-brand" href="{{url('/')}}">SMS</a>
 			</div>
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					<li><a href="{{url('/')}}">Home</a></li>
-					<li><a href="{{url('inbox')}}">Inbox</a></li>
-					<li><a href="{{url('contact')}}">Contact</a></li>
+					{{-- <li @if(Request::is('home*')) class="active" @endif><a href="{{url('/')}}">Home</a></li> --}}
+					<li @if(Request::is('inbox*')) class="active" @endif><a href="{{url('inbox')}}">Inbox</a></li>
+					<li class="dropdown @if(Request::is('contact*')||Request::is('group*')) active @endif">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Phone Book <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li @if(Request::is('contact*')) class="active" @endif><a href="{{url('contact')}}">Contact</a></li>
+								<li @if(Request::is('group*')) class="active" @endif><a href="{{url('group')}}">Group</a></li>
+							</ul>
+						</li>
 					{{-- <li><a href="{{url('sent')}}">Sent</a></li> --}}
 				</ul>
 

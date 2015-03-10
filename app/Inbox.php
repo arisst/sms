@@ -8,11 +8,15 @@ class Inbox extends Model {
 
 	public static function grouping()
 	{
-		return \DB::table('view_conversation')
-					->select('view_conversation.*','pbk.Name')
+		/*return \DB::table('view_conversation')
+					->select('view_conversation.*',\DB::raw('max(waktu) as wkt'),'pbk.Name')
 					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
 					->groupBy('hp')
-					->get();
+					->orderBy('wkt','desc')
+					->get();*/
+
+		return \DB::select(\DB::raw("
+SELECT sub.*,pbk.Name FROM (SELECT * from view_conversation ORDER BY waktu desc) AS sub left join pbk on(pbk.Number=sub.hp) GROUP BY sub.hp ORDER BY waktu desc"));
 	}
 	
 	public static function listing($perpage = '')
