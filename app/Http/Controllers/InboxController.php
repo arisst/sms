@@ -19,25 +19,30 @@ class InboxController extends Controller {
 
 	public function index()
 	{
-		if (\Session::get('group')=='On') {
-			$db = Inbox::grouping();
-			$view = 'inbox.index';
+		if(\Request::ajax()) 
+		{
+			$term = \Input::get('term');
+			$db = Inbox::grouping($term);
+			return \Response::json($db);
 		}
-		else{
-			$db = Inbox::listing(20);
-			$view = 'inbox.inbox';
+		else
+		{
+			if (\Session::get('group')=='On') {
+				$view = 'inbox.index';
+			}
+			else{
+				$db = Inbox::listing(20);
+				$view = 'inbox.inbox';
+			}
+			return view($view)->with('data');
 		}
-		return view($view)->with('data',$db);
 	}
 
 
 	public function create()
 	{
-		$id = '085259,081234';
-		$ids = explode(',', $id);
-		$ida = array_map(function($str){return str_replace('0', '+62', $str);}, $ids);
-		
-		return $ida;
+		// $db = Inbox::where('isi','regexp','');
+		// return $;
 	}
 
 

@@ -8,7 +8,7 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Contact
+					Keyword
 					<div class="pull-right">
 						<a class="btn-sm" title="Add new contact" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Add new</a>
 					</div>
@@ -44,16 +44,25 @@
 									    </div>
 									  </div>
 									  <div class="form-group">
-									    <label for="number" class="col-sm-2 control-label">Number</label>
+									    <label for="keyword" class="col-sm-2 control-label">Keyword</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="number" class="form-control input-sm" id="number" placeholder="Number" required>
+									      <input type="text" name="keyword" class="form-control input-sm" id="keyword" placeholder="Keyword" required>
 									    </div>
 									  </div>
 									  <div class="form-group">
-									    <label for="group" class="col-sm-2 control-label">Group</label>
-									    <div class="col-sm-10" id="prefetch">
-									    <input type="hidden" name="groupid" id="groupid">
-									      <input type="text" name="group" class="form-control input-sm" id="group" placeholder="Group" required>
+									    <label for="url" class="col-sm-2 control-label">URL</label>
+									    <div class="col-sm-10">
+									      <input type="text" name="url" class="form-control input-sm" id="url" placeholder="URL" required>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label for="method" class="col-sm-2 control-label">Method</label>
+									    <div class="col-sm-10">
+									      <select name="method" class="form-control input-sm" id="method">
+									      	<option value="get">GET</option>
+									      	<option value="post">POST</option>
+									      	<option value="put">PUT</option>
+									      </select>
 									    </div>
 									  </div>
 									  <div class="form-group">
@@ -115,19 +124,6 @@
 		}
 	});
 
-	/* AUTOCOMPLETE */
-	$(function() {
-		$("#group").autocomplete(
-		{
-			 source: "{{url('group')}}/0",
-			 select: function( event, ui ) {
-				$("#group").val(ui.item.label);
-				$("#groupid").val(ui.item.id);
-				return false;
-			}
-		})
-	});
-
 	/* CHECK FUNCTION */
 	function checkAll(source) {
 		// $("#checkdel").show();
@@ -147,12 +143,12 @@
 		$(document).bind("ajaxStop.mine", function() {
 			// alert('loaded');
 		});
-		$.get("{{url('contact')}}?page="+page+"&term="+term, function(data,status){
+		$.get("{{url('keyword')}}?page="+page+"&term="+term, function(data,status){
 			var res= '';
 			current_page = data['current_page'];
 			last_page = data['last_page'];
 			$.each(data['data'], function(i, item) {
-			    res += '<a id="l-'+item.ID+'" href="#" onclick="Detail('+item.ID+');" class="list-group-item"><p class="list-group-item-heading"><input name="cid[]" value="'+item.ID+'" type="checkbox" class="cg"> <b>'+item.Name+'</b></p><p class="list-group-item-text">'+item.Number+'</p></a>';
+			    res += '<a id="l-'+item.id+'" href="#" onclick="Detail('+item.id+');" class="list-group-item"><p class="list-group-item-heading"><input name="cid[]" value="'+item.id+'" type="checkbox" class="cg"> <b>'+item.name+'</b></p><p class="list-group-item-text">'+item.keyword+'</p></a>';
 			})
 			$("#listcontact").html(res);
 		});
@@ -180,7 +176,7 @@
 				closeOnConfirm: true }, 
 
 				function(){   
-					$.post("{{url('contact')}}/"+vals,
+					$.post("{{url('keyword')}}/"+vals,
 					{
 						id:vals, _method:"DELETE",	_token:"{{csrf_token()}}"
 					},
@@ -212,15 +208,15 @@
 				    }
 				});
 
-				$.get("{{url('contact')}}/"+id, function(data,status){
+				$.get("{{url('keyword')}}/"+id, function(data,status){
 					location.hash = id;
-					$('input[name="name"]').val(data[0]['Name']);
-					$('input[name="number"]').val(data[0]['Number']);
-					$('input[name="group"]').val(data[0]['GroupName']);
+					$('input[name="name"]').val(data[0]['name']);
+					$('input[name="keyword"]').val(data[0]['keyword']);
+					$('input[name="url"]').val(data[0]['url']);
 			    	$("#submit-button").html('Save');
 			    	$("#submit-button").removeAttr('disabled');
 			    	$('#submit-button').attr('onclick', 'Add('+id+');');
-				    $('#title').html(data[0]['Name']);
+				    $('#title').html(data[0]['name']);
 				});
 				$(document).unbind(".mine1");
 			}else{
@@ -228,10 +224,10 @@
 			}
 		}
 
-	function formAdd(number){
-		$('#title').html('Add new contact');
+	function formAdd(){
+		$('#title').html('Add new keyword');
 	    $('input[name="name"]').val('');
-		$('input[name="number"]').val(number);
+		$('input[name="keyword"]').val('');
 		$('input[name="group"]').val('');
 		$("#submit-button").html('Add');
     	$("#submit-button").removeAttr('disabled');
@@ -252,7 +248,7 @@
 		var nomor = $("input#number").val();
 		var group = $("input#group").val();
 		if(nama && nomor){
-			$.post("{{url('contact')}}"+edit,
+			$.post("{{url('keyword')}}"+edit,
 			{
 				name:nama,
 				number:nomor,

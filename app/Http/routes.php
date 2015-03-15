@@ -18,6 +18,7 @@ Route::resource('inbox', 'InboxController');
 Route::resource('outbox', 'OutboxController');
 Route::resource('contact', 'ContactController');
 Route::resource('group', 'GroupController');
+Route::resource('keyword', 'KeywordController');
 Route::resource('sent', 'SentController');
 
 Route::controllers([

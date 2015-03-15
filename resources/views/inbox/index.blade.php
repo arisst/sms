@@ -14,7 +14,7 @@
     height: 200px;
   }
   </style>
-<body onload="Detail(window.location.hash.substring(1));">
+<body onload="firstLoad(window.location.hash.substring(1));">
 <div class="container">
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
@@ -29,23 +29,19 @@
 				</div>
 
 				<div class="panel-body">
-					<?php $i = 1; ?>
 				<div class="row">
 					<div class="col-md-4">
+					<input type="search" id="search" class="form-control input-sm" placeholder="Search name or number">
 					<div style="height:500px;overflow-x:hidden;overflow-y:auto">
-						<div class="list-group">
-						@foreach($data as $value)
-						  <div id="l-{{$value->hp}}"  onclick="Detail('{{$value->hp}}');" class="list-group-item" style="cursor:pointer;">
-						    <p class="list-group-item-heading"><input name="cid[]" value="{{$value->hp}}" type="checkbox" class="cg"> @if($value->Name){{$value->Name}}@else{{$value->hp}}
-						    <a class="pull-right" title="Add to contact" href="{{url('contact').'?number='.$value->hp}}"><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a>
-						    @endif 
-						    {{-- <a class="pull-right" title="Delete conversation" href="#add#{{$value->hp}}"><span style="color:red" class="glyphicon glyphicon-trash"></span></a> --}}
-						    </p>
-						    <p class="list-group-item-text">{{str_limit($value->isi, 60)}}</p>
-						  </div>
-						<?php $i++; ?>
-						@endforeach
+						<div class="list-group" id="listinbox">
+							{{-- LIST OF CONTENT --}}
 						</div>
+						{{-- <div id="pagination" align="center">
+						  <ul class="pagination pagination-sm">
+						    <li><a id="prev" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+						    <li><a id="next" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+						  </ul>
+						</div> --}}
 					</div>
 					<a class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
 					</div>
@@ -99,7 +95,37 @@
 
 <script type="text/javascript">
 
-//AUTOCOMPLETE
+/* ON FIRST LOAD */
+	function firstLoad (detail) {
+		getData();
+		detail = (typeof detail !== 'undefined') ? detail : '';
+		Detail(detail);
+	}
+
+	/* READY FUNCTION */
+	$(document).ready(function(){
+		/* SEARCH */
+		$("#search").keyup(function(){
+			getData($(this).val());
+		});
+	});
+
+	/* PAGINATION */
+	var current_page = '';
+	var last_page = '';
+	$("#next").click(function(){
+			// alert(last_page);
+		if(current_page<last_page){
+			getData('', current_page+1);
+		}
+	});
+	$("#prev").click(function(){
+		if(current_page>1){
+			getData('', current_page-1);
+		}
+	});
+
+//AUTOCOMPLETE destination number
 	$(function() {
 		function split( val ) {
 	      return val.split( /,\s*/ );
@@ -151,6 +177,29 @@
 		   checkboxes[i].checked = source.checked;
 		}
 		// document.getElementById("del").innerHTML = '<a href="#" onClick="Delete()">Delete data ini?</a>';
+	}
+
+	/* GET DATA FROM SERVER */
+	function getData (term,page) {
+		term = typeof term !== 'undefined' ? term : '';
+		page = typeof page !== 'undefined' ? page : 1;
+		$(document).bind("ajaxStart.mine", function() {
+			$("#listinbox").html('<img src="{{asset("img/loadsmall.gif")}}">');
+		});
+		$(document).bind("ajaxStop.mine", function() {
+			// alert('loaded');
+		});
+		$.get("{{url('inbox')}}?page="+page+"&term="+term, function(data,status){
+			var res=nama= '';
+			current_page = data['current_page'];
+			last_page = data['last_page'];
+			$.each(data, function(i, item) {
+				if(item.Name!==null){nama = item.Name;}else{nama=item.hp;}
+			    res += '<div id="l-'+item.hp+'" onclick="Detail(\''+item.hp+'\');" class="list-group-item" style="cursor:pointer;"><p class="list-group-item-heading"><input name="cid[]" value="'+item.hp+'" type="checkbox" class="cg"> <b>'+nama+'</b><a class="pull-right" title="Add to contact" href={{url("contact")}}#!/add/'+item.hp+'><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a></p><p class="list-group-item-text">'+item.isi.substring(0,30)+'</p></div>';
+			})
+			$("#listinbox").html(res);
+		});
+		$(document).unbind(".mine");
 	}
 
 	function Hapus(){
@@ -220,6 +269,7 @@
 	function Detail(phone)
 		{
 			if(phone){
+				// phone = '0'+phone;
 				$("[id^='l-']").removeClass('active');
 				$("#l-"+phone).addClass('active');
 			    $("#form0").hide();

@@ -49,7 +49,7 @@ class ContactController extends Controller {
 	{
 		if(\Request::ajax()) 
 		{
-			/* Destination Autocomplete Response */
+			/* Destination Autocomplete Response (Compose message Form)*/
 			if($id==0) 
 			{
 				$term = \Input::get('term');

@@ -5,23 +5,24 @@ use sms\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+use sms\Keyword;
+
 class KeywordController extends Controller {
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
 	public function index()
 	{
-		//
+		if(\Request::ajax()) 
+		{
+			$term = \Input::get('term');
+			$db = Keyword::where('name','like','%'.$term.'%')->orWhere('keyword','like','%'.$term.'%')->orderBy('name','asc')->paginate();
+			return \Response::json($db);
+		}
+		else
+		{
+			return view('keyword.index');
+		}
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
 	public function create()
 	{
 		//
@@ -45,7 +46,20 @@ class KeywordController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		if(\Request::ajax()) 
+		{	
+			$data = Keyword::where('id','=',$id)->get();
+			if($data){
+				return \Response::json($data);
+			}else{
+				return \Response::json(null, 404);
+			}
+		
+		}
+		else
+		{
+			abort(404);
+		}
 	}
 
 	/**
