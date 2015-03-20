@@ -55,16 +55,7 @@
 									      <input type="text" name="url" class="form-control input-sm" id="url" placeholder="URL" required>
 									    </div>
 									  </div>
-									  <div class="form-group">
-									    <label for="method" class="col-sm-2 control-label">Method</label>
-									    <div class="col-sm-10">
-									      <select name="method" class="form-control input-sm" id="method">
-									      	<option value="get">GET</option>
-									      	<option value="post">POST</option>
-									      	<option value="put">PUT</option>
-									      </select>
-									    </div>
-									  </div>
+									
 									  <div class="form-group">
 									    <div class="col-sm-offset-2 col-sm-10">
 									      <a id="submit-button" onclick="Add()" class="btn btn-default btn-sm">Add</a>
@@ -91,15 +82,8 @@
 	/* ON FIRST LOAD */
 	function firstLoad (detail) {
 		getData();
-		var part = location.hash.split('/');
-		// console.log(part);
-		if(part[0]=='#!' && part[1]=='add'){
-			formAdd(part[2]);
-		}else{
-			detail = (typeof detail !== 'undefined') ? detail : '';
-			Detail(detail);
-		}
-
+		detail = (typeof detail !== 'undefined') ? detail : '';
+		Detail(detail);
 	}
 
 	/* READY FUNCTION */
@@ -228,7 +212,7 @@
 		$('#title').html('Add new keyword');
 	    $('input[name="name"]').val('');
 		$('input[name="keyword"]').val('');
-		$('input[name="group"]').val('');
+		$('input[name="url"]').val('');
 		$("#submit-button").html('Add');
     	$("#submit-button").removeAttr('disabled');
     	$('#submit-button').attr('onclick', 'Add();');
@@ -245,14 +229,14 @@
 			method = 'POST'; 
 		}
 		var nama = $("input#name").val();
-		var nomor = $("input#number").val();
-		var group = $("input#group").val();
-		if(nama && nomor){
+		var keyword = $("input#keyword").val();
+		var url = $("input#url").val();
+		if(nama){
 			$.post("{{url('keyword')}}"+edit,
 			{
 				name:nama,
-				number:nomor,
-				group:group,
+				keyword:keyword,
+				url:url,
 				_method:method,
 				_token:"{{csrf_token()}}"
 			},
@@ -260,8 +244,8 @@
 				if(status=='success'){
 					if(!id){
 						$('input[name="name"]').val('');
-						$('input[name="number"]').val('');
-						$('input[name="group"]').val('');
+						$('input[name="keyword"]').val('');
+						$('input[name="url"]').val('');
 					}
 			  		firstLoad(data.id);
 				}

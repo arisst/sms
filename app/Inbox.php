@@ -88,7 +88,9 @@ class Inbox extends Model {
 		return \DB::table('view_conversation')
 					->select('view_conversation.*','pbk.Name')
 					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
-					->where('hp', '=', $hp)->orderBy('waktu','asc')->get();
+					->where('hp', '=', $hp)
+					->orderBy('waktu','asc')
+					->get();
 	}
 
 }

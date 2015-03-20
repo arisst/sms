@@ -21,6 +21,8 @@ Route::resource('group', 'GroupController');
 Route::resource('keyword', 'KeywordController');
 Route::resource('sent', 'SentController');
 
+Route::get('daemon', 'KeywordController@daemon');
+
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',

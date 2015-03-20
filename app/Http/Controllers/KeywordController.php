@@ -6,8 +6,37 @@ use sms\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use sms\Keyword;
+use sms\Inbox;
 
 class KeywordController extends Controller {
+
+	function __construct() 
+	{
+		$this->middleware('auth');
+	}
+
+	public function daemon()
+	{
+			$id = '3';
+			$data = Keyword::find($id);
+			$keyword = $data['keyword'];
+			$posisi = strpos($keyword, '[');
+			$keyword_utama = ($posisi) ? substr($keyword, 0,$posisi) : $keyword ;
+			$count1 = preg_match_all("/\[([^\]]*)\]/", $keyword, $matches1); //[]
+			$count2 = preg_match_all('/\${(.*?)}/', $data['url'], $matches2); //${}
+			$db = Keyword::getInboxByKeyword($keyword_utama);
+			foreach ($db as $key) {
+				$query = ['hp' => $key->hp, 'isi' => $key->isi, 'waktu' => $key->waktu];
+			}
+			foreach ($matches2[1] as $key) {
+				$patterns[] = '/\${'.$key.'}/';
+				$replacements[] = $query[$key];
+			}
+			$newtext = preg_replace($patterns, $replacements, $data['url']); //${}
+			$a = $matches2[1][0].'<br>'.$data['url'].'<br>'.$newtext;
+
+			return $a;
+	}
 
 	public function index()
 	{
@@ -25,74 +54,67 @@ class KeywordController extends Controller {
 
 	public function create()
 	{
-		//
+		\Queue::push('Keyword');
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
 	public function store()
 	{
-		//
+		$db = new Keyword;
+		$db->name = \Input::get('name');
+		$db->keyword = \Input::get('keyword');
+		$db->url = \Input::get('url');
+		$db->method = \Input::get('method');
+		$db->params = \Input::get('params');
+		$db->save();
+		return \Response::json(['id'=>$db->id]);
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function show($id)
 	{
 		if(\Request::ajax()) 
 		{	
 			$data = Keyword::where('id','=',$id)->get();
-			if($data){
+			if($data)
+			{
 				return \Response::json($data);
-			}else{
+			}
+			else
+			{
 				return \Response::json(null, 404);
 			}
 		
 		}
 		else
 		{
-			abort(404);
+
 		}
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function edit($id)
 	{
 		//
 	}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function update($id)
 	{
-		//
+		$db = Keyword::find($id);
+		$db->name = \Input::get('name');
+		$db->keyword = \Input::get('keyword');
+		$db->url = \Input::get('url');
+		$db->method = \Input::get('method');
+		$db->params = \Input::get('params');
+		$db->save();
+		return \Response::json(['id'=>$db->id]);
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function destroy($id)
 	{
-		//
+		if(\Request::ajax()) 
+		{
+			$ids = explode(',', $id);
+			$db = \DB::table('keywords')->whereIn('id', $ids)->delete();
+			return $db;	
+		}
 	}
 
 }

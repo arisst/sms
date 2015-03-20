@@ -12,6 +12,8 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		'sms\Console\Commands\Inspire',
+		'sms\Console\Commands\UpdateSms',
+		'sms\Console\Commands\HttpRequest',
 	];
 
 	/**
@@ -22,8 +24,10 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('inspire')
-				 ->hourly();
+		$schedule->command('inspire')->hourly();
+		$schedule->command('sms:update');
+		$schedule->command('sms:push');
+		// $schedule->command('queue:listen');
 	}
 
 }
