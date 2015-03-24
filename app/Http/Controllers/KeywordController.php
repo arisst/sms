@@ -17,25 +17,69 @@ class KeywordController extends Controller {
 
 	public function daemon()
 	{
-			$id = '3';
-			$data = Keyword::find($id);
-			$keyword = $data['keyword'];
-			$posisi = strpos($keyword, '[');
-			$keyword_utama = ($posisi) ? substr($keyword, 0,$posisi) : $keyword ;
-			$count1 = preg_match_all("/\[([^\]]*)\]/", $keyword, $matches1); //[]
-			$count2 = preg_match_all('/\${(.*?)}/', $data['url'], $matches2); //${}
-			$db = Keyword::getInboxByKeyword($keyword_utama);
-			foreach ($db as $key) {
-				$query = ['hp' => $key->hp, 'isi' => $key->isi, 'waktu' => $key->waktu];
-			}
-			foreach ($matches2[1] as $key) {
-				$patterns[] = '/\${'.$key.'}/';
-				$replacements[] = $query[$key];
-			}
-			$newtext = preg_replace($patterns, $replacements, $data['url']); //${}
-			$a = $matches2[1][0].'<br>'.$data['url'].'<br>'.$newtext;
+		$data = Keyword::where('status','1')->get();
+		foreach ($data as $row) 
+		{
+			$keyword = $row['keyword'];
+			$url = $row['url'];
 
-			return $a;
+			/* Pakai keyword */
+			if($keyword!='')
+			{
+				$second_keyword_count = preg_match_all("/\[([^\]]*)\]/", $keyword, $second_keyword_match); //[]
+				#dd($second_keyword_count);
+				$main_keyword = Keyword::main($keyword);
+				$db = Keyword::inbox($main_keyword);
+				foreach ($db as $key) 
+				{
+					#Inbox::process($key->id);
+					unset($query);
+					unset($patterns);
+					unset($replacements);
+					$url_match = Keyword::url($url);
+					$query = ['sender' => $key->hp, 'message' => $key->isi, 'time' => $key->waktu];
+					foreach ($url_match as $key1) 
+					{
+						$patterns[] = '/\${'.$key1.'}/';
+						$replacements[] = $query[$key1];
+					}
+					$newurl = preg_replace($patterns, $replacements, $url).'<br>'; //${}
+
+					if($second_keyword_count)
+					{
+						unset($patterns2);
+						unset($replacements2);
+						$main_keyword_count = strlen($main_keyword);
+						$first = strtok($key->isi, " ");
+						
+						$explode_keyword = explode(']', substr($keyword, strlen($main_keyword)));
+						$delimiter = substr($explode_keyword[1], 0, strpos($explode_keyword[1], '['));
+						#dd($delimiter);
+
+						foreach ($second_keyword_match[1] as $key2) 
+						{
+							$patterns2[] = '/\$\['.$key2.'\]/';
+							$replacements2[] = $key->isi;#substr($key->isi, $main_keyword_count);
+						}
+						$newest_url = preg_replace($patterns2, $replacements2, $newurl).' (baru)<br>keyword:'.$keyword.'||isi:'.$key->isi.'<br>';
+						echo $newest_url;
+
+					}
+					else
+					{
+						echo $newurl;
+					}
+
+				}
+			}
+
+			/* Tanpa Keyword */
+			else 
+			{
+				$db = Inbox::where('Processed','false')->get();
+				dd($db);
+			} 
+		}
 	}
 
 	public function index()

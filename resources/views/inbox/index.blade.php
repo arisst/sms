@@ -301,7 +301,7 @@
 							btn = btn0+' <a title="Delete" onclick="deleteId(\'outbox\', '+data[i]['id']+')" href="#'+phone+'"><span style="color:red" class="glyphicon glyphicon-trash"></span></a>';
 						}
 						if (data[i]['udh']!='') {tag='div';}else{tag='div';}
-						response +='<'+tag+' class="col-md-8 alert '+style+'">'+data[i]['isi']+'<br><small>'+data[i]['waktu']+'</small><div class="pull-right">'+btn+'</div></'+tag+'>';
+						response +='<'+tag+' class="col-md-8 alert '+style+'">'+data[i]['isi']+'<br><small> '+data[i]['status']+':'+data[i]['waktu']+'</small><div class="pull-right">'+btn+'</div></'+tag+'>';
 					};
 			    	document.getElementById("detail").innerHTML = response;
 			    	// document.getElementById('l-'+phone).className = 'list-group-item active';

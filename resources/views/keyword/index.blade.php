@@ -38,21 +38,50 @@
 								<div id="detail">
 									<form class="form-horizontal">
 									  <div class="form-group">
-									    <label for="name" class="col-sm-2 control-label">Name</label>
+									    <label for="name" class="col-sm-2 control-label">Name *</label>
 									    <div class="col-sm-10">
 									      <input type="text" name="name" class="form-control input-sm" id="name" placeholder="Name" required>
 									    </div>
 									  </div>
+
+									  <br>
+									  <label>Filter *</label>
+
 									  <div class="form-group">
 									    <label for="keyword" class="col-sm-2 control-label">Keyword</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="keyword" class="form-control input-sm" id="keyword" placeholder="Keyword" required>
+									      <input type="text" name="keyword" class="form-control input-sm" id="keyword" placeholder="Keyword">
 									    </div>
 									  </div>
+
+									  <div class="form-group">
+									    <label for="group" class="col-sm-2 control-label">Group</label>
+									    <div class="col-sm-10">
+									      <input type="text" name="group" class="form-control input-sm" id="group" placeholder="Group">
+									    </div>
+									  </div>
+
+									  <br>
+									  <label>Action *</label>
+
 									  <div class="form-group">
 									    <label for="url" class="col-sm-2 control-label">URL</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="url" class="form-control input-sm" id="url" placeholder="URL" required>
+									      <input type="text" name="url" class="form-control input-sm" id="url" placeholder="URL">
+									    </div>
+									  </div>
+
+									  <div class="form-group">
+									    <label for="togroup" class="col-sm-2 control-label">To Group</label>
+									    <div class="col-sm-10">
+									      <input type="text" name="togroup" class="form-control input-sm" id="togroup" placeholder="Group">
+									    </div>
+									  </div>
+
+									  <div class="form-group">
+									    <label for="reply" class="col-sm-2 control-label">Auto Reply</label>
+									    <div class="col-sm-10">
+									      <input type="text" name="reply" class="form-control input-sm" id="reply" placeholder="Text to reply">
 									    </div>
 									  </div>
 									

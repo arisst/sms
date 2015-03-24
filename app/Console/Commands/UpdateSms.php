@@ -18,7 +18,7 @@ class UpdateSms extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Command description.';
+	protected $description = 'Rencananya Update SMS';
 
 	/**
 	 * Create a new command instance.

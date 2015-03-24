@@ -93,4 +93,11 @@ class Inbox extends Model {
 					->get();
 	}
 
+	public static function process($id)
+	{
+		return \DB::table('inbox')
+					->where('ID',$id)
+					->update(['Processed'=>'true']);
+	}
+
 }
