@@ -18,7 +18,12 @@ class GroupController extends Controller {
 		if(\Request::ajax()) 
 		{
 			$term = \Input::get('term');
-			$db = Group::where('Name','like','%'.$term.'%')->orderBy('Name','asc')->paginate();
+			$db = Group::select('pbk_groups.*', \DB::raw('count(pbk.ID) as count'))
+						->leftJoin('pbk', 'pbk.GroupID', '=', 'pbk_groups.ID')
+						->where('pbk_groups.Name','like','%'.$term.'%')
+						->groupBy('pbk_groups.ID')
+						->orderBy('pbk_groups.Name','asc')
+						->get();
 			return \Response::json($db);
 		}
 		else
@@ -60,7 +65,7 @@ class GroupController extends Controller {
 			/* Detail group response */
 			else 
 			{
-				$data = Group::where('ID',$id)->get();
+				$data = Group::select('pbk_groups.*', 'pbk.Name as cname', 'pbk.Number')->leftJoin('pbk', 'pbk.GroupID', '=', 'pbk_groups.ID')->where('pbk_groups.ID',$id)->get();
 				if($data){
 					return \Response::json($data);
 				}else{

@@ -27,9 +27,23 @@ class ContactController extends Controller {
 		}
 	}
 
-	public function create()
+	public static function newContact($number, $name, $gid='')
 	{
-		//
+		// Cek di database contact
+		$a = Contact::where('Number',$number)->first();
+		if($a)
+		{
+			return $a['ID'];
+		}
+		else
+		{
+			$db = new Contact;
+			$db->Name = $name;
+			$db->Number = $number;
+			$db->GroupID = $gid;
+			$db->save();
+			return $db->ID;
+		}
 	}
 
 	public function store()

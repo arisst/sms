@@ -8,7 +8,7 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Contact
+					Group
 					<div class="pull-right">
 						<a class="btn-sm" title="Add new contact" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Add new</a>
 					</div>
@@ -21,12 +21,12 @@
 					<input type="search" id="search" class="form-control input-sm" placeholder="Search name or number">
 					<div id="listarea" style="height:470px;overflow-x:hidden;overflow-y:auto">
 						<div class="list-group" id="listgroup"></div>
-						<div id="pagination" align="center">
+						{{-- <div id="pagination" align="center">
 						  <ul class="pagination pagination-sm">
 						    <li><a id="prev" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
 						    <li><a id="next" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
 						  </ul>
-						</div>
+						</div> --}}
 					</div>
 					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
 					</div>
@@ -49,6 +49,10 @@
 									    </div>
 									  </div>
 									</form>
+								</div>
+
+								<div class="member">
+									
 								</div>
 							</div>
 							
@@ -125,8 +129,8 @@
 			var res= '';
 			current_page = data['current_page'];
 			last_page = data['last_page'];
-			$.each(data['data'], function(i, item) {
-			    res += '<a id="l-'+item.ID+'" href="#" onclick="Detail('+item.ID+');" class="list-group-item"><p class="list-group-item-heading"><input name="cid[]" value="'+item.ID+'" type="checkbox" class="cg"> <b>'+item.Name+'</b></p><p class="list-group-item-text">'+/*item.Number+*/'</p></a>';
+			$.each(data, function(i, item) {
+			    res += '<a id="l-'+item.ID+'" href="#" onclick="Detail('+item.ID+');" class="list-group-item"><p class="list-group-item-heading"><input name="cid[]" value="'+item.ID+'" type="checkbox" class="cg"> <b>'+item.Name+' <span class="badge">'+item.count+'</span></b></p><p class="list-group-item-text">'+/*item.Number+*/'</p></a>';
 			})
 			$("#listgroup").html(res);
 		});
@@ -193,6 +197,20 @@
 			    	$("#submit-button").removeAttr('disabled');
 			    	$('#submit-button').attr('onclick', 'Add('+id+');');
 				    $('#title').html(data[0]['Name']);
+
+				    var res = '';
+				    $.each(data, function(i, item) 
+				    {
+					    if (item.Number)
+					    {
+					    	res += '<a id="l-'+item.ID+'" href="#" class="list-group-item"><p class="list-group-item-heading"><b>'+item.cname+'</b></p><p class="list-group-item-text">'+item.Number+'<span class="pull-right" onclick=alert("oi") title="Remove from this group"><span style="color:red" class="glyphicon glyphicon-remove-circle"></span></span></p></a>';
+					    }
+					    else
+					    {
+					    	res = 'Tidak ada data';
+					    }
+					})
+					$(".member").html(res);
 				});
 				$(document).unbind(".mine1");
 			}else{

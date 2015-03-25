@@ -4,7 +4,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-use sms\Http\Controllers\Controller\KeywordController;
+use sms\Http\Controllers\KeywordController as KeywordController;
 use sms\Keyword;
 use sms\Inbox;
 
@@ -64,7 +64,15 @@ class HttpRequest extends Command {
 	{
 		$a = KeywordController::daemon();
 		foreach ($a as $key) {
-			$this->info('wkwk'.$key);
+			if($key)
+			{
+				$this->curl_file_get_contents($key);
+				$this->info('Pushed : '.$key);
+			}
+			else
+			{
+				$this->info('No data to push!');
+			}
 		}
 	}
 

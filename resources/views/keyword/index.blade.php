@@ -65,7 +65,7 @@
 									  <label>Action *</label>
 
 									  <div class="form-group">
-									    <label for="url" class="col-sm-2 control-label">URL</label>
+									    <label for="url" class="col-sm-2 control-label">URL *</label>
 									    <div class="col-sm-10">
 									      <input type="text" name="url" class="form-control input-sm" id="url" placeholder="URL">
 									    </div>

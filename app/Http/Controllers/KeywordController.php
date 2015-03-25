@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use sms\Keyword;
 use sms\Inbox;
 use sms\Group;
+use sms\Outbox;
 
 class KeywordController extends Controller {
 
@@ -21,8 +22,11 @@ class KeywordController extends Controller {
 		$data = Keyword::where('status','1')->get();
 		foreach ($data as $row) 
 		{
+			$name = $row['name'];
 			$keyword = $row['keyword'];
 			$url = $row['url'];
+			$joingroup_id = $row['joingroup_id'];
+			$text_reply = $row['text_reply'];
 
 			/* Pakai keyword */
 			if($keyword!='')
@@ -32,65 +36,93 @@ class KeywordController extends Controller {
 				$db = Keyword::inbox($main_keyword);
 				if($db)
 				{
+					// Ada inbox yang sesuai keyword
 					foreach ($db as $key) 
 					{
-						#Inbox::process($key->id);
-						unset($query);
-						unset($patterns);
-						unset($replacements);
-						$url_match = Keyword::url($url);
-						$query = ['sender' => $key->hp, 'message'=> trim(substr($key->isi, strlen($main_keyword))), 'content' => $key->isi, 'time' => $key->waktu];
-						foreach ($url_match as $key1) 
-						{
-							$patterns[] = '/\${'.$key1.'}/';
-							$replacements[] = $query[$key1];
-						}
-						$newurl = preg_replace($patterns, $replacements, $url).'<br>'; //${}
+					//set inbox:prosessed to true
+						Inbox::process($key->id); 
 
-						/* SECOND KEYWORD [] */
-						if($second_keyword_count>0) 
+					// Action URL request
+						if($url!='')
 						{
-							unset($patterns2);
-							unset($replacements2);
-							$main_keyword_count = strlen($main_keyword);
-							$first = strtok($key->isi, " ");
-							
-							$explode_keyword = explode(']', substr($keyword, strlen($main_keyword)));
-							$delimiter = substr($explode_keyword[1], 0, strpos($explode_keyword[1], '['));
-							#dd($delimiter);
-
-							foreach ($second_keyword_match[1] as $key2) 
+							unset($query);
+							unset($patterns);
+							unset($replacements);
+							$url_match = Keyword::url($url);
+							$query = ['sender' => $key->hp, 'message'=> trim(substr($key->isi, strlen($main_keyword))), 'content' => $key->isi, 'time' => $key->waktu];
+							foreach ($url_match as $key1) 
 							{
-								$patterns2[] = '/\$\['.$key2.'\]/';
-								$replacements2[] = $key->isi;#substr($key->isi, $main_keyword_count);
+								$patterns[] = '/\${'.$key1.'}/';
+								$replacements[] = $query[$key1];
 							}
-							$newest_url = preg_replace($patterns2, $replacements2, $newurl).' (baru)<br>keyword:'.$keyword.'||isi:'.$key->isi.'<br>';
-							$return[] = $newest_url;
-						}
+							$newurl = preg_replace($patterns, $replacements, $url); //${}
 
-						/* WITHOUT SECOND KEYWORD */
+						/* SECOND KEYWORD [] (belum selesai)*/ 
+							if($second_keyword_count>0) 
+							{
+								unset($patterns2);
+								unset($replacements2);
+								$main_keyword_count = strlen($main_keyword);
+								$first = strtok($key->isi, " ");
+								
+								$explode_keyword = explode(']', substr($keyword, strlen($main_keyword)));
+								$delimiter = substr($explode_keyword[1], 0, strpos($explode_keyword[1], '['));
+
+								foreach ($second_keyword_match[1] as $key2) 
+								{
+									$patterns2[] = '/\$\['.$key2.'\]/';
+									$replacements2[] = $key->isi;#substr($key->isi, $main_keyword_count);
+								}
+								$newest_url = preg_replace($patterns2, $replacements2, $newurl).' (baru)<br>keyword:'.$keyword.'||isi:'.$key->isi.'<br>';
+								$return_url[] = $newest_url;
+							}
+
+							/* WITHOUT SECOND KEYWORD */
+							else
+							{
+								$return_url[] = $newurl;
+							}
+						}
 						else
 						{
-							$return[] = $newurl;
+							$return_url[] = '';
 						}
+
+					// Auto add to contact and group
+						if($joingroup_id)
+						{
+							$firstname = ($keyword) ? $keyword : $name ;
+							$contactname = $firstname.'-'.substr($key->hp, -3);
+							$cc = new ContactController;
+							$cc->newContact($key->hp, $contactname, $joingroup_id);
+						}
+
+					// Autoreply
+						if($text_reply)
+						{
+							Outbox::create(['DestinationNumber'=>$key->hp, 'TextDecoded'=>$text_reply]);
+						}
+
+
 					}
 				}
 				else
 				{
-					$return[] = '';
+					// Inbox tidak ada yang sesuai filter keyword
+					$return_url[] = '';
 				}
-
-				return $return;
-
 			}
 
 			/* Tanpa Keyword */
 			else 
 			{
+				//maaf keyword salah / tidak sesuai format
 				$db = Inbox::where('Processed','false')->get();
 				dd($db);
 			} 
 		}
+
+		return $return_url;
 	}
 
 	public function index()
