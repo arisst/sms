@@ -4,6 +4,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Keyword extends Model {
 
+	public static function detail($id)
+	{
+		return \DB::table('keywords')
+					->select('keywords.*', 'pbk_groups.name as gname')
+					->leftJoin('pbk_groups', 'keywords.joingroup_id', '=', 'pbk_groups.id')
+					->where('keywords.id', $id)
+					->get();
+	}
+
 	public static function inbox($main_keyword)
 	{
 		$db = \DB::table('view_conversation');

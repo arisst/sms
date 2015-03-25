@@ -4,6 +4,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
+use sms\Http\Controllers\Controller\KeywordController;
 use sms\Keyword;
 use sms\Inbox;
 
@@ -61,25 +62,9 @@ class HttpRequest extends Command {
 
 	public function fire()
 	{
-		$id = '3';
-		$data = Keyword::find($id);
-		$keyword = $data['keyword'];
-		$posisi = strpos($keyword, '[');
-		$keyword_utama = ($posisi) ? substr($keyword, 0,$posisi) : $keyword ;
-		$count1 = preg_match_all("/\[([^\]]*)\]/", $keyword, $matches1); //[]
-		$count2 = preg_match_all('/\${(.*?)}/', $data['url'], $matches2); //${}
-		$db = Keyword::getInboxByKeyword($keyword_utama);
-		foreach ($db as $key) 
-		{
-			$query = ['hp' => $key->hp, 'isi' => $key->isi, 'waktu' => $key->waktu];
-			foreach ($matches2[1] as $key) 
-			{
-				$patterns[] = '/\${'.$key.'}/';
-				$replacements[] = $query[$key];
-			}
-			$newurl = preg_replace($patterns, $replacements, $data['url']); //${}
-			$json = $this->curl_file_get_contents($newurl);
-			$this->info("HttpRequest telah dipush! ".$json);
+		$a = KeywordController::daemon();
+		foreach ($a as $key) {
+			$this->info('wkwk'.$key);
 		}
 	}
 

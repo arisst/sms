@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use sms\Keyword;
 use sms\Inbox;
+use sms\Group;
 
 class KeywordController extends Controller {
 
@@ -15,7 +16,7 @@ class KeywordController extends Controller {
 		$this->middleware('auth');
 	}
 
-	public function daemon()
+	public static function daemon()
 	{
 		$data = Keyword::where('status','1')->get();
 		foreach ($data as $row) 
@@ -27,50 +28,60 @@ class KeywordController extends Controller {
 			if($keyword!='')
 			{
 				$second_keyword_count = preg_match_all("/\[([^\]]*)\]/", $keyword, $second_keyword_match); //[]
-				#dd($second_keyword_count);
 				$main_keyword = Keyword::main($keyword);
 				$db = Keyword::inbox($main_keyword);
-				foreach ($db as $key) 
+				if($db)
 				{
-					#Inbox::process($key->id);
-					unset($query);
-					unset($patterns);
-					unset($replacements);
-					$url_match = Keyword::url($url);
-					$query = ['sender' => $key->hp, 'message' => $key->isi, 'time' => $key->waktu];
-					foreach ($url_match as $key1) 
+					foreach ($db as $key) 
 					{
-						$patterns[] = '/\${'.$key1.'}/';
-						$replacements[] = $query[$key1];
-					}
-					$newurl = preg_replace($patterns, $replacements, $url).'<br>'; //${}
-
-					if($second_keyword_count)
-					{
-						unset($patterns2);
-						unset($replacements2);
-						$main_keyword_count = strlen($main_keyword);
-						$first = strtok($key->isi, " ");
-						
-						$explode_keyword = explode(']', substr($keyword, strlen($main_keyword)));
-						$delimiter = substr($explode_keyword[1], 0, strpos($explode_keyword[1], '['));
-						#dd($delimiter);
-
-						foreach ($second_keyword_match[1] as $key2) 
+						#Inbox::process($key->id);
+						unset($query);
+						unset($patterns);
+						unset($replacements);
+						$url_match = Keyword::url($url);
+						$query = ['sender' => $key->hp, 'message'=> trim(substr($key->isi, strlen($main_keyword))), 'content' => $key->isi, 'time' => $key->waktu];
+						foreach ($url_match as $key1) 
 						{
-							$patterns2[] = '/\$\['.$key2.'\]/';
-							$replacements2[] = $key->isi;#substr($key->isi, $main_keyword_count);
+							$patterns[] = '/\${'.$key1.'}/';
+							$replacements[] = $query[$key1];
 						}
-						$newest_url = preg_replace($patterns2, $replacements2, $newurl).' (baru)<br>keyword:'.$keyword.'||isi:'.$key->isi.'<br>';
-						echo $newest_url;
+						$newurl = preg_replace($patterns, $replacements, $url).'<br>'; //${}
 
-					}
-					else
-					{
-						echo $newurl;
-					}
+						/* SECOND KEYWORD [] */
+						if($second_keyword_count>0) 
+						{
+							unset($patterns2);
+							unset($replacements2);
+							$main_keyword_count = strlen($main_keyword);
+							$first = strtok($key->isi, " ");
+							
+							$explode_keyword = explode(']', substr($keyword, strlen($main_keyword)));
+							$delimiter = substr($explode_keyword[1], 0, strpos($explode_keyword[1], '['));
+							#dd($delimiter);
 
+							foreach ($second_keyword_match[1] as $key2) 
+							{
+								$patterns2[] = '/\$\['.$key2.'\]/';
+								$replacements2[] = $key->isi;#substr($key->isi, $main_keyword_count);
+							}
+							$newest_url = preg_replace($patterns2, $replacements2, $newurl).' (baru)<br>keyword:'.$keyword.'||isi:'.$key->isi.'<br>';
+							$return[] = $newest_url;
+						}
+
+						/* WITHOUT SECOND KEYWORD */
+						else
+						{
+							$return[] = $newurl;
+						}
+					}
 				}
+				else
+				{
+					$return[] = '';
+				}
+
+				return $return;
+
 			}
 
 			/* Tanpa Keyword */
@@ -107,8 +118,19 @@ class KeywordController extends Controller {
 		$db->name = \Input::get('name');
 		$db->keyword = \Input::get('keyword');
 		$db->url = \Input::get('url');
-		$db->method = \Input::get('method');
-		$db->params = \Input::get('params');
+
+		if(\Input::has('gname'))
+		{
+			$dbgroup = Group::firstOrCreate(['Name'=>\Input::get('gname')]);
+			$joingroup_id = $dbgroup->ID;
+		}
+		else
+		{
+			$joingroup_id = '';
+		}
+
+		$db->joingroup_id = $joingroup_id;
+		$db->text_reply = \Input::get('text_reply');
 		$db->save();
 		return \Response::json(['id'=>$db->id]);
 	}
@@ -117,7 +139,7 @@ class KeywordController extends Controller {
 	{
 		if(\Request::ajax()) 
 		{	
-			$data = Keyword::where('id','=',$id)->get();
+			$data = Keyword::detail($id);
 			if($data)
 			{
 				return \Response::json($data);
@@ -145,8 +167,19 @@ class KeywordController extends Controller {
 		$db->name = \Input::get('name');
 		$db->keyword = \Input::get('keyword');
 		$db->url = \Input::get('url');
-		$db->method = \Input::get('method');
-		$db->params = \Input::get('params');
+
+		if(\Input::has('gname'))
+		{
+			$dbgroup = Group::firstOrCreate(['Name'=>\Input::get('gname')]);
+			$joingroup_id = $dbgroup->ID;
+		}
+		else
+		{
+			$joingroup_id = '';
+		}
+
+		$db->joingroup_id = $joingroup_id;
+		$db->text_reply = \Input::get('text_reply');
 		$db->save();
 		return \Response::json(['id'=>$db->id]);
 	}

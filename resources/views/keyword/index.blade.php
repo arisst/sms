@@ -54,12 +54,12 @@
 									    </div>
 									  </div>
 
-									  <div class="form-group">
+									 {{--  <div class="form-group">
 									    <label for="group" class="col-sm-2 control-label">Group</label>
 									    <div class="col-sm-10">
 									      <input type="text" name="group" class="form-control input-sm" id="group" placeholder="Group">
 									    </div>
-									  </div>
+									  </div> --}}
 
 									  <br>
 									  <label>Action *</label>
@@ -72,16 +72,17 @@
 									  </div>
 
 									  <div class="form-group">
-									    <label for="togroup" class="col-sm-2 control-label">To Group</label>
+									    <label for="gname" class="col-sm-2 control-label">To Group</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="togroup" class="form-control input-sm" id="togroup" placeholder="Group">
+									      <input type="hidden" name="joingroup_id" id="joingroup_id">
+									      <input type="text" name="gname" class="form-control input-sm" id="gname" placeholder="Group">
 									    </div>
 									  </div>
 
 									  <div class="form-group">
-									    <label for="reply" class="col-sm-2 control-label">Auto Reply</label>
+									    <label for="text_reply" class="col-sm-2 control-label">Auto Reply</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="reply" class="form-control input-sm" id="reply" placeholder="Text to reply">
+									      <textarea name="text_reply" class="form-control input-sm" id="text_reply" placeholder="Text to reply"></textarea>
 									    </div>
 									  </div>
 									
@@ -226,6 +227,9 @@
 					$('input[name="name"]').val(data[0]['name']);
 					$('input[name="keyword"]').val(data[0]['keyword']);
 					$('input[name="url"]').val(data[0]['url']);
+					$('input[name="joingroup_id"]').val(data[0]['joingroup_id']);
+					$('input[name="gname"]').val(data[0]['gname']);
+					$('textarea[name="text_reply"]').val(data[0]['text_reply']);
 			    	$("#submit-button").html('Save');
 			    	$("#submit-button").removeAttr('disabled');
 			    	$('#submit-button').attr('onclick', 'Add('+id+');');
@@ -242,6 +246,9 @@
 	    $('input[name="name"]').val('');
 		$('input[name="keyword"]').val('');
 		$('input[name="url"]').val('');
+		$('input[name="joingroup_id"]').val('');
+		$('input[name="gname"]').val('');
+		$('textarea[name="text_reply"]').val('');
 		$("#submit-button").html('Add');
     	$("#submit-button").removeAttr('disabled');
     	$('#submit-button').attr('onclick', 'Add();');
@@ -260,12 +267,18 @@
 		var nama = $("input#name").val();
 		var keyword = $("input#keyword").val();
 		var url = $("input#url").val();
+		var joingroup_id = $("input#joingroup_id").val();
+		var gname = $("input#gname").val();
+		var text_reply = $("textarea#text_reply").val();
 		if(nama){
 			$.post("{{url('keyword')}}"+edit,
 			{
 				name:nama,
 				keyword:keyword,
 				url:url,
+				joingroup_id:joingroup_id,
+				gname:gname,
+				text_reply:text_reply,
 				_method:method,
 				_token:"{{csrf_token()}}"
 			},
