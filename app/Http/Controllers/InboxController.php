@@ -61,7 +61,7 @@ class InboxController extends Controller {
 					$group = Group::where('Name','=',$key)->first();
 					if($contact)
 					{
-						return Outbox::create(['DestinationNumber'=>$contact['Number'], 'TextDecoded'=>$msg]);
+						return Outbox::create(['DestinationNumber'=>$contact['Number'], 'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id]);
 					}
 					else
 					{
@@ -71,7 +71,7 @@ class InboxController extends Controller {
 						}
 						else
 						{
-							return Outbox::create(['DestinationNumber'=>$key, 'TextDecoded'=>$msg]);
+							return Outbox::create(['DestinationNumber'=>$key, 'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id ]);
 						}
 					}
 				}
@@ -79,7 +79,7 @@ class InboxController extends Controller {
 		}
 		else
 		{
-			return Outbox::create(['DestinationNumber'=>$dst, 'TextDecoded'=>$msg]);
+			return Outbox::create(['DestinationNumber'=>$dst, 'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id]);
 		}
 
 	}

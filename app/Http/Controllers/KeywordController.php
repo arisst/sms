@@ -100,7 +100,7 @@ class KeywordController extends Controller {
 					// Autoreply
 						if($text_reply)
 						{
-							Outbox::create(['DestinationNumber'=>$key->hp, 'TextDecoded'=>$text_reply]);
+							Outbox::create(['DestinationNumber'=>$key->hp, 'TextDecoded'=>$text_reply, 'CreatorID'=>'keywords.'.$row['id']]);
 						}
 
 

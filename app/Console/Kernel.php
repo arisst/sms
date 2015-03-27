@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel {
 		'sms\Console\Commands\Inspire',
 		'sms\Console\Commands\UpdateSms',
 		'sms\Console\Commands\HttpRequest',
+		'LucaDegasperi\OAuth2Server\Console\ClientCreatorCommand',
 	];
 
 	/**

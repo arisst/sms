@@ -45,6 +45,7 @@
 						</li>
 					{{-- <li><a href="{{url('sent')}}">Sent</a></li> --}}
 					<li @if(Request::is('keyword*')) class="active" @endif><a href="{{url('keyword')}}">Keyword</a></li>
+					<li @if(Request::is('api*')) class="active" @endif><a href="{{url('api')}}">Api</a></li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">

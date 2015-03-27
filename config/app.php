@@ -145,6 +145,10 @@ return [
 		'sms\Providers\EventServiceProvider',
 		'sms\Providers\RouteServiceProvider',
 
+		// Oauth2 server provider
+		'LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider',
+		'LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider',
+
 	],
 
 	/*
@@ -192,6 +196,8 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
+
+		'Authorizer' => 'LucaDegasperi\OAuth2Server\Facades\AuthorizerFacade',
 
 	],
 
