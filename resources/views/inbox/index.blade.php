@@ -20,9 +20,9 @@
 		<div class="col-md-10 col-md-offset-1">
 
 			<div class="panel panel-default">
-				<div class="panel-heading">Inbox 
+				<div class="panel-heading">Kotak Masuk 
 					<div class="pull-right">
-						<a class="btn-sm" title="Compose new message" href="inbox"><span style="color:green" class="glyphicon glyphicon-envelope"></span>Compose</a>
+						<a class="btn-sm" title="Buat SMS baru" href="inbox"><span style="color:green" class="glyphicon glyphicon-envelope"></span>SMS baru</a>
 						<?php $gr = (Session::get('group')=='Off') ? '1' : '0' ; ?>
 							<a href="{{url('inbox/'.$gr.'/edit')}}" class="btn btn-default btn-sm <?php if(!$gr) echo 'active'; ?>" >Grouping : {{Session::get('group')}}</a>
 					</div>
@@ -31,7 +31,7 @@
 				<div class="panel-body">
 				<div class="row">
 					<div class="col-md-4">
-					<input type="search" id="search" class="form-control input-sm" placeholder="Search name or number">
+					<input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama atau nomor">
 					<div style="height:500px;overflow-x:hidden;overflow-y:auto">
 						<div class="list-group" id="listinbox">
 							{{-- LIST OF CONTENT --}}
@@ -43,7 +43,7 @@
 						  </ul>
 						</div> --}}
 					</div>
-					<a class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
+					<a class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a>
 					</div>
 
 					<div class="col-md-8">
@@ -55,21 +55,79 @@
 								<form id="form0" class="form-horizontal">
 									  
 									  <div class="form-group">
-									    <label for="destination" class="col-sm-2 control-label">Destination</label>
+									    <label for="destination" class="col-sm-2 control-label">Tujuan</label>
 									    <div class="col-sm-10" id="prefetch">
-									      <input type="text" name="destination" class="form-control input-sm" id="destination" placeholder="Destination" required>
+									      <input type="text" name="destination" class="form-control input-sm" id="destination" placeholder="Isi nomor, nama kontak atau nama group">
 									      {{-- <select name="destination[]" class="chosen-select" tabindex="4" multiple=""></select> --}}
 									    </div>
 									  </div>
 									  <div class="form-group">
-									    <label for="text" class="col-sm-2 control-label">Text</label>
+									    <label for="text" class="col-sm-2 control-label">Isi SMS</label>
 									    <div class="col-sm-10">
-									      <textarea id="msg0" class="form-control" id="text" placeholder="Text" required>{{Input::get('text')}}</textarea>
+									      <textarea id="msg0" class="form-control input-sm" id="text" placeholder="Isi SMS" required>{{Input::get('text')}}</textarea>
 									    </div>
 									  </div>
+
+									  <div id="schedule-button" class="form-group">
+									    <label for="text" class="col-sm-2 control-label"></label>
+									  	<div class="col-sm-10">
+										  	<a class="btn btn-warning btn-xs" onclick="showScheduleForm()">Jadwalkan pengiriman</a>
+									  	</div>
+									  </div>
+									  <input type="hidden" id="scheduled" value="0">
+
+									  <script type="text/javascript">
+									  	function showScheduleForm(){
+									  		$('#schedule-button').hide();
+									  		$('#schedule-form').show();
+									  		$('#scheduled').val('1');
+									  	}
+									  	function hideScheduleForm(){
+									  		$('#schedule-button').show();
+									  		$('#schedule-form').hide();
+									  		$('#scheduled').val('0');
+									  	}
+									  </script>
+									  
+									  <div id="schedule-form" class="form-group" style="display:none;">
+									    <label for="send_date" class="col-sm-2 control-label">Waktu Kirim</label>
+									    <div class="col-sm-3">
+									      <input type="text" id="send_date" class="form-control input-sm" id="send_date" data-date-format="yyyy-mm-dd" placeholder="Tanggal Kirim"> 
+									      <p class="help-block">tanggal</p> 
+									    </div>
+
+									  <script type="text/javascript">
+									  	$(function () {
+									  		$('#send_date').datepicker({
+									  			dateFormat: "yy-mm-dd"
+									  		});
+									  	});
+									  </script>
+
+									    <div class="col-sm-2">
+									      <select id="hour" class="form-control input-sm">
+									      	@for ($i=0; $i < 24; $i++) 
+									      		<option>{{sprintf("%02d",$i)}}</option>
+									      	@endfor
+									      </select>
+									      <p class="help-bloc">jam</p>
+									    </div>
+									    <div class="col-sm-2">
+									      <select id="minute" class="form-control input-sm">
+									      	@for ($i=0; $i < 60; $i++) 
+									      		<option>{{sprintf("%02d",$i)}}</option>
+									      	@endfor
+									      </select>
+									      <p class="help-block">menit</p>
+									    </div>
+									    <div class="col-sm-2">
+										  	<a class="btn btn-warning btn-xs" onclick="hideScheduleForm()">Batalkan</a>
+									  	</div>
+									  </div>									 
+
 									  <div class="form-group">
 									    <div class="col-sm-offset-2 col-sm-10">
-									      <a id="submit-button" onclick="Send()" class="btn btn-default btn-sm">Send</a>
+									      <a id="submit-button" onclick="Send()" class="btn btn-default btn-sm">Kirim</a>
 									    </div>
 									  </div>
 									</form>
@@ -77,7 +135,7 @@
 							</div>
 							<div id="form" class="input-group">
 					          <textarea id="msg" name="msg" class="form-control" style="resize:none" rows="2" required></textarea>
-					          <a class="input-group-addon btn btn-primary" onclick="Send(window.location.hash.substring(1));"><span class="glyphicon glyphicon-send" ></span> Send</a>
+					          <a class="input-group-addon btn btn-primary" onclick="Send(window.location.hash.substring(1));"><span class="glyphicon glyphicon-send" ></span> Kirim</a>
 					        </div>
 							
 						</div>
@@ -213,12 +271,12 @@
 		}
 		if(vals.length){
 			swal({
-				title: "Are you sure?",
-				text: "You will not be able to recover this data!",   
+				title: "Anda yakin?",
+				text: "Data yang sudah dihapus tidak dapat dikembalikan!",   
 				type: "warning",   
 				showCancelButton: true,   
 				confirmButtonColor: "#DD6B55",   
-				confirmButtonText: "Delete!",   
+				confirmButtonText: "Hapus!",   
 				closeOnConfirm: false }, 
 
 				function(){   
@@ -230,20 +288,20 @@
 					},
 					function(data,status){
 						if(status=='success'){
-					    	swal("Deleted!", data+" data has been deleted.", "success");
-					    	Detail('');
+					    	swal("Terhapus!", data+" data telah dihapus.", "success");
+					    	firstLoad();
 						}
 					});
 				});
 		}else{
-			swal({title: "Select data you want to delete!",text: "It will close in 2 seconds.",timer: 2000,type: "info" });
+			swal({title: "Pilih data yang akan dihapus!",text: "Akan tertutup setelah 2 detik.",timer: 2000,type: "info" });
 		}
 	}
 
 	function deleteId(tabel,value) {
 			swal({
-				title: "Are you sure?",
-				text: "You will not be able to recover this data!",   
+				title: "Anda yakin?",
+				text: "Data yang sudah dihapus tidak dapat dikembalikan!",   
 				type: "warning",   
 				showCancelButton: true,   
 				confirmButtonColor: "#DD6B55",   
@@ -274,7 +332,7 @@
 				$("#l-"+phone).addClass('active');
 			    $("#form0").hide();
 			    $(document).ajaxStart(function(){
-			        document.getElementById("title").innerHTML='Loading...';
+			        $("#title").html('<img src="{{asset("img/loadsmall.gif")}}">');
 			    });
 			    $(document).ajaxError(function(event, jqxhr, settings, exception) {
 				    if (jqxhr.status==401) {
@@ -315,17 +373,21 @@
 
 				});
 			}else{
-			    document.getElementById("title").innerHTML='Compose message';
+			    document.getElementById("title").innerHTML='Buat SMS baru';
 			    $("#form0").show();
 			    $("#form").hide();
 			}
 		}
 
+	function formCompose(){
+		$("input#destination").val('');
+    	$("textarea#msg0").val('');
+    	hideScheduleForm();
+	}
+
 	function Send (phone) 
 	{
-		var dest = '';
-		var state = '';
-		var msg = '';
+		var dest = state = msg = schedule = '';
 		if(phone){ //conversation
 			state = 1;
 			dest = phone;
@@ -336,14 +398,17 @@
 			state = 0;
 			dest = $("input#destination").val();
 			msg = $("textarea#msg0").val();
+			if($('#scheduled').val()=='1'){
+				schedule = $("input#send_date").val()+' '+$('#hour').val()+':'+$('#minute').val()+':00';
+			}
 		}
 		swal({
-				title: "Are you sure?",
-				text: "You will send this message to '"+dest+"'?",   
+				title: "Anda yakin?",
+				text: "Akan mengirim SMS ke '"+dest+"'?",   
 				type: "info",   
 				showCancelButton: true,   
 				// confirmButtonColor: "#DD6B55",   
-				confirmButtonText: "Yes, send it!",   
+				confirmButtonText: "Kirim",   
 				closeOnConfirm: true }, 
 
 				function(){ 
@@ -352,6 +417,7 @@
 						destination:dest,
 						state:state,
 						message:msg,
+						schedule:schedule,
 						_token:"{{csrf_token()}}"
 					},
 					function(data,status){
@@ -360,8 +426,8 @@
 								$("textarea#msg").val('');
 						    	Detail(window.location.hash.substring(1));
 						    }else{
-						    	$("input#destination").val('');
-						    	$("textarea#msg0").val('');
+						    	firstLoad();
+						    	formCompose();
 						    }
 						}
 					});

@@ -8,9 +8,9 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Contact
+					Kontak
 					<div class="pull-right">
-						<a class="btn-sm" title="Add new contact" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Add new</a>
+						<a class="btn-sm" title="Tambah kontak baru" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Tambah baru</a>
 					</div>
 				</div>
 
@@ -18,7 +18,7 @@
 					
 				<div class="row">
 					<div class="col-md-4">
-					<input type="search" id="search" class="form-control input-sm" placeholder="Search name or number">
+					<input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama atau nomor">
 					<div id="listarea" style="height:470px;overflow-x:hidden;overflow-y:auto">
 						<div class="list-group" id="listcontact"></div>
 						<div id="pagination" align="center">
@@ -28,7 +28,7 @@
 						  </ul>
 						</div>
 					</div>
-					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
+					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a>
 					</div>
 
 					<div class="col-md-8">
@@ -38,27 +38,28 @@
 								<div id="detail">
 									<form class="form-horizontal">
 									  <div class="form-group">
-									    <label for="name" class="col-sm-2 control-label">Name</label>
+									    <label for="name" class="col-sm-2 control-label">Nama</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="name" class="form-control input-sm" id="name" placeholder="Name" required>
+									      <input type="text" name="name" class="form-control input-sm" id="name" placeholder="Nama">
 									    </div>
 									  </div>
 									  <div class="form-group">
-									    <label for="number" class="col-sm-2 control-label">Number</label>
+									    <label for="number" class="col-sm-2 control-label">Nomor HP</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="number" class="form-control input-sm" id="number" placeholder="Number" required>
+									      <input type="text" name="number" class="form-control input-sm" id="number" placeholder="Nomor HP">
 									    </div>
 									  </div>
 									  <div class="form-group">
 									    <label for="group" class="col-sm-2 control-label">Group</label>
 									    <div class="col-sm-10" id="prefetch">
 									    <input type="hidden" name="groupid" id="groupid">
-									      <input type="text" name="group" class="form-control input-sm" id="group" placeholder="Group" required>
+									      <input type="text" name="group" class="form-control input-sm" id="group" placeholder="Masukkan nama group">
+									      <p class="help-block">Jika belum tersedia autocomplete, group otomatis akan ditambahkan.</p>
 									    </div>
 									  </div>
 									  <div class="form-group">
 									    <div class="col-sm-offset-2 col-sm-10">
-									      <a id="submit-button" onclick="Add()" class="btn btn-default btn-sm">Add</a>
+									      <a id="submit-button" onclick="Add()" class="btn btn-default btn-sm">Tambah</a>
 									    </div>
 									  </div>
 									</form>
@@ -171,12 +172,12 @@
 		}
 		if(vals.length){
 			swal({
-				title: "Are you sure?",
-				text: "You will not be able to recover this data!",   
+				title: "Anda yakin?",
+				text: "Data yang sudah dihapus tidak dapat dikembalikan!",   
 				type: "warning",   
 				showCancelButton: true,   
 				confirmButtonColor: "#DD6B55",   
-				confirmButtonText: "Yes, delete it!",   
+				confirmButtonText: "Hapus",   
 				closeOnConfirm: true }, 
 
 				function(){   
@@ -192,7 +193,7 @@
 					});
 				});
 		}else{
-			swal({title: "Select data you want to delete!",text: "It will close in 2 seconds.",timer: 2000,type: "info" });
+			swal({title: "Pilih data yang akan dihapus!",text: "Akan tertutup setelah 2 detik.",timer: 2000,type: "info" });
 		}
 	}
 
@@ -217,7 +218,7 @@
 					$('input[name="name"]').val(data[0]['Name']);
 					$('input[name="number"]').val(data[0]['Number']);
 					$('input[name="group"]').val(data[0]['GroupName']);
-			    	$("#submit-button").html('Save');
+			    	$("#submit-button").html('Simpan');
 			    	$("#submit-button").removeAttr('disabled');
 			    	$('#submit-button').attr('onclick', 'Add('+id+');');
 				    $('#title').html(data[0]['Name']);
@@ -229,11 +230,11 @@
 		}
 
 	function formAdd(number){
-		$('#title').html('Add new contact');
+		$('#title').html('Tambah kontak baru');
 	    $('input[name="name"]').val('');
 		$('input[name="number"]').val(number);
 		$('input[name="group"]').val('');
-		$("#submit-button").html('Add');
+		$("#submit-button").html('Tambah');
     	$("#submit-button").removeAttr('disabled');
     	$('#submit-button').attr('onclick', 'Add();');
 	}

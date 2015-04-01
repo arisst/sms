@@ -35,28 +35,28 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					{{-- <li @if(Request::is('home*')) class="active" @endif><a href="{{url('/')}}">Home</a></li> --}}
-					<li @if(Request::is('inbox*')) class="active" @endif><a href="{{url('inbox')}}">Inbox</a></li>
+					<li @if(Request::is('inbox*')) class="active" @endif><a href="{{url('inbox')}}">KOTAK MASUK</a></li>
 					<li class="dropdown @if(Request::is('contact*')||Request::is('group*')) active @endif">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Phone Book <span class="caret"></span></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">KONTAK <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li @if(Request::is('contact*')) class="active" @endif><a href="{{url('contact')}}">Contact</a></li>
-								<li @if(Request::is('group*')) class="active" @endif><a href="{{url('group')}}">Group</a></li>
+								<li @if(Request::is('contact*')) class="active" @endif><a href="{{url('contact')}}">LIST KONTAK</a></li>
+								<li @if(Request::is('group*')) class="active" @endif><a href="{{url('group')}}">GROUP KONTAK</a></li>
 							</ul>
 						</li>
 					{{-- <li><a href="{{url('sent')}}">Sent</a></li> --}}
-					<li @if(Request::is('keyword*')) class="active" @endif><a href="{{url('keyword')}}">Keyword</a></li>
-					<li @if(Request::is('api*')) class="active" @endif><a href="{{url('api')}}">Api</a></li>
+					<li @if(Request::is('keyword*')) class="active" @endif><a href="{{url('keyword')}}">KATA KUNCI</a></li>
+					<li @if(Request::is('api*')) class="active" @endif><a href="{{url('api')}}">API</a></li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
 					@if (Auth::guest())
-						<li><a href="{{url('auth/login')}}">Login</a></li>
-						<li><a href="{{url('auth/register')}}">Register</a></li>
+						<li><a href="{{url('auth/login')}}">MASUK</a></li>
+						<li><a href="{{url('auth/register')}}">DAFTAR</a></li>
 					@else
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="{{url('auth/logout')}}">Logout</a></li>
+								<li><a href="{{url('auth/logout')}}">Keluar</a></li>
 							</ul>
 						</li>
 					@endif

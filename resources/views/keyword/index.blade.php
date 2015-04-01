@@ -8,9 +8,9 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Keyword
+					Format SMS / Kata Kunci
 					<div class="pull-right">
-						<a class="btn-sm" title="Add new contact" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Add new</a>
+						<a class="btn-sm" title="Tambah format baru" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Tambah baru</a>
 					</div>
 				</div>
 
@@ -18,7 +18,7 @@
 					
 				<div class="row">
 					<div class="col-md-4">
-					<input type="search" id="search" class="form-control input-sm" placeholder="Search name or number">
+					<input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama">
 					<div id="listarea" style="height:470px;overflow-x:hidden;overflow-y:auto">
 						<div class="list-group" id="listcontact"></div>
 						<div id="pagination" align="center">
@@ -28,7 +28,7 @@
 						  </ul>
 						</div>
 					</div>
-					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
+					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a>
 					</div>
 
 					<div class="col-md-8">
@@ -38,19 +38,19 @@
 								<div id="detail">
 									<form class="form-horizontal">
 									  <div class="form-group">
-									    <label for="name" class="col-sm-2 control-label">Name *</label>
+									    <label for="name" class="col-sm-2 control-label">Nama *</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="name" class="form-control input-sm" id="name" placeholder="Name" required>
+									      <input type="text" name="name" class="form-control input-sm" id="name" placeholder="Nama Kata Kunci" required>
 									    </div>
 									  </div>
 
-									  <br>
 									  <label>Filter *</label>
 
 									  <div class="form-group">
-									    <label for="keyword" class="col-sm-2 control-label">Keyword</label>
+									    <label for="keyword" class="col-sm-2 control-label">Kata Kunci</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="keyword" class="form-control input-sm" id="keyword" placeholder="Keyword">
+									      <input type="text" name="keyword" class="form-control input-sm" id="keyword" placeholder="Kata Kunci">
+									      <p class="help-block">Untuk menyaring SMS yang masuk dengan kata pertama</p>
 									    </div>
 									  </div>
 
@@ -61,34 +61,35 @@
 									    </div>
 									  </div> --}}
 
-									  <br>
 									  <label>Action *</label>
 
 									  <div class="form-group">
 									    <label for="url" class="col-sm-2 control-label">URL *</label>
 									    <div class="col-sm-10">
 									      <input type="text" name="url" class="form-control input-sm" id="url" placeholder="URL">
+									      <p class="help-block">Untuk meneruskan data ke website lain</p>
 									    </div>
 									  </div>
 
 									  <div class="form-group">
-									    <label for="gname" class="col-sm-2 control-label">To Group</label>
+									    <label for="gname" class="col-sm-2 control-label">Ke Group</label>
 									    <div class="col-sm-10">
 									      <input type="hidden" name="joingroup_id" id="joingroup_id">
 									      <input type="text" name="gname" class="form-control input-sm" id="gname" placeholder="Group">
+									      <p class="help-block">Memasukkan nomor ke dalam group</p>
 									    </div>
 									  </div>
 
 									  <div class="form-group">
-									    <label for="text_reply" class="col-sm-2 control-label">Auto Reply</label>
+									    <label for="text_reply" class="col-sm-2 control-label">Balas otomatis</label>
 									    <div class="col-sm-10">
-									      <textarea name="text_reply" class="form-control input-sm" id="text_reply" placeholder="Text to reply"></textarea>
+									      <textarea name="text_reply" class="form-control input-sm" id="text_reply" placeholder="Isi balasan"></textarea>
 									    </div>
 									  </div>
 									
 									  <div class="form-group">
 									    <div class="col-sm-offset-2 col-sm-10">
-									      <a id="submit-button" onclick="Add()" class="btn btn-default btn-sm">Add</a>
+									      <a id="submit-button" onclick="Add()" class="btn btn-default btn-sm">Tambah</a>
 									    </div>
 									  </div>
 									</form>
@@ -99,8 +100,7 @@
 					</div>
 				</div>
 
-				<div class="row">
-				</div>
+				<div class="row"></div>
 
 				</div>
 			</div>
@@ -181,12 +181,12 @@
 		}
 		if(vals.length){
 			swal({
-				title: "Are you sure?",
-				text: "You will not be able to recover this data!",   
+				title: "Anda yakin?",
+				text: "Data yang sudah dihapus tidak dapat dikembalikan!",   
 				type: "warning",   
 				showCancelButton: true,   
 				confirmButtonColor: "#DD6B55",   
-				confirmButtonText: "Yes, delete it!",   
+				confirmButtonText: "Hapus",   
 				closeOnConfirm: true }, 
 
 				function(){   
@@ -202,7 +202,7 @@
 					});
 				});
 		}else{
-			swal({title: "Select data you want to delete!",text: "It will close in 2 seconds.",timer: 2000,type: "info" });
+			swal({title: "Pilih data yang akan dihapus!",text: "Akan tertutup setelah 2 detik.",timer: 2000,type: "info" });
 		}
 	}
 
@@ -230,7 +230,7 @@
 					$('input[name="joingroup_id"]').val(data[0]['joingroup_id']);
 					$('input[name="gname"]').val(data[0]['gname']);
 					$('textarea[name="text_reply"]').val(data[0]['text_reply']);
-			    	$("#submit-button").html('Save');
+			    	$("#submit-button").html('Simpan');
 			    	$("#submit-button").removeAttr('disabled');
 			    	$('#submit-button').attr('onclick', 'Add('+id+');');
 				    $('#title').html(data[0]['name']);
@@ -242,14 +242,14 @@
 		}
 
 	function formAdd(){
-		$('#title').html('Add new keyword');
+		$('#title').html('Tambah kata kunci baru');
 	    $('input[name="name"]').val('');
 		$('input[name="keyword"]').val('');
 		$('input[name="url"]').val('');
 		$('input[name="joingroup_id"]').val('');
 		$('input[name="gname"]').val('');
 		$('textarea[name="text_reply"]').val('');
-		$("#submit-button").html('Add');
+		$("#submit-button").html('Tambah');
     	$("#submit-button").removeAttr('disabled');
     	$('#submit-button').attr('onclick', 'Add();');
 	}

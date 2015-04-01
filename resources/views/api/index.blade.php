@@ -10,7 +10,7 @@
 				<div class="panel-heading">
 					Api
 					<div class="pull-right">
-						<a class="btn-sm" title="Add new api" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Add new</a>
+						<a class="btn-sm" title="Tambah Api Baru" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Tambah Baru</a>
 					</div>
 				</div>
 
@@ -18,7 +18,7 @@
 					
 				<div class="row">
 					<div class="col-md-4">
-					<input type="search" id="search" class="form-control input-sm" placeholder="Search name">
+					<input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama">
 					<div id="listarea" style="height:470px;overflow-x:hidden;overflow-y:auto">
 						<div class="list-group" id="listcontact"></div>
 						<div id="pagination" align="center">
@@ -28,7 +28,7 @@
 						  </ul>
 						</div>
 					</div>
-					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">With selected: Delete?</a>
+					<a  id="checkdel" class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a>
 					</div>
 
 					<div class="col-md-8">
@@ -38,25 +38,27 @@
 								<div id="detail">
 									<form class="form-horizontal">
 									  <div class="form-group">
-									    <label for="name" class="col-sm-2 control-label">Name</label>
+									    <label for="name" class="col-sm-2 control-label">Nama API</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="name" class="form-control input-sm" id="name" placeholder="Name" required>
+									      <input type="text" name="name" class="form-control input-sm" id="name" placeholder="Nama">
 									    </div>
 									  </div>
 									  <div class="form-group">
 									    <label for="token" class="col-sm-2 control-label">Token</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="token" class="form-control input-sm" id="token" placeholder="Token" required>
+									      <input type="text" name="token" class="form-control input-sm" id="token" placeholder="Token">
+									      <p class="help-block">Token diacak secara otomatis, bisa diubah sesuai keinginan</p>
 									    </div>
 									  </div>
 									  <div class="form-group">
-									    <label for="access_ip" class="col-sm-2 control-label">Access IP</label>
+									    <label for="access_ip" class="col-sm-2 control-label">Akses IP</label>
 									    <div class="col-sm-10">
-									      <input type="text" name="access_ip" class="form-control input-sm" id="access_ip" placeholder="Access IP" required>
+									      <input type="text" name="access_ip" class="form-control input-sm" id="access_ip" placeholder="Kosongkan jika bisa diakses dari IP manapun">
+									      <p class="help-block">IP anda saat ini: {{Request::getClientIp()}}</p>
 									    </div>
 									  </div>
 									  <div class="form-group">
-									    <label for="url" class="col-sm-2 control-label">URL</label>
+									    <label for="url" class="col-sm-2 control-label">Akses URL</label>
 									    <div class="col-sm-10">
 									      <div id="url" class="well"></div>
 									    </div>
@@ -64,7 +66,7 @@
 									  
 									  <div class="form-group">
 									    <div class="col-sm-offset-2 col-sm-10">
-									      <a id="submit-button" onclick="Add()" class="btn btn-default btn-sm">Add</a>
+									      <a id="submit-button" onclick="Add()" class="btn btn-default btn-sm">Tambah</a>
 									    </div>
 									  </div>
 									</form>
@@ -177,12 +179,12 @@
 		}
 		if(vals.length){
 			swal({
-				title: "Are you sure?",
-				text: "You will not be able to recover this data!",   
+				title: "Anda yakin?",
+				text: "Data yang sudah dihapus tidak dapat dikembalikan!",   
 				type: "warning",   
 				showCancelButton: true,   
 				confirmButtonColor: "#DD6B55",   
-				confirmButtonText: "Yes, delete it!",   
+				confirmButtonText: "Hapus",   
 				closeOnConfirm: true }, 
 
 				function(){   
@@ -198,7 +200,7 @@
 					});
 				});
 		}else{
-			swal({title: "Select data you want to delete!",text: "It will close in 2 seconds.",timer: 2000,type: "info" });
+			swal({title: "Pilih data yang akan dihapus!",text: "Akan tertutup setelah 2 detik.",timer: 2000,type: "info" });
 		}
 	}
 
@@ -227,7 +229,7 @@
 					if (data['access_ip']!='') { ip = '<br><br>Hanya dapat diakses oleh ip : '+data['access_ip'];};
 					var url = "{{url('kirimsms')}}"+'?token='+data['token']+'&message=[isi_sms]&number=[nomor_tujuan]'+ip;
 					$('#url').html(url);
-			    	$("#submit-button").html('Save');
+			    	$("#submit-button").html('Simpan');
 			    	$("#submit-button").removeAttr('disabled');
 			    	$('#submit-button').attr('onclick', 'Add('+id+');');
 				    $('#title').html(data['name']);
@@ -239,12 +241,12 @@
 		}
 
 	function formAdd(){
-		$('#title').html('Add new api');
+		$('#title').html('Tambah API baru');
 	    $('input[name="name"]').val('');
 		$('input[name="token"]').val(Math.random().toString(36).substring(7));
 		$('input[name="access_ip"]').val('');
 		$('#url').html('');
-		$("#submit-button").html('Add');
+		$("#submit-button").html('Tambah');
     	$("#submit-button").removeAttr('disabled');
     	$('#submit-button').attr('onclick', 'Add();');
 	}

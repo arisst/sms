@@ -50,7 +50,8 @@ class InboxController extends Controller {
 	{
 		$dst = \Input::get('destination');
 		$msg = \Input::get('message');
-		if(\Input::get('state')==0)
+		$schedule = (\Input::has('schedule')) ? \Input::get('schedule') : null ;
+		if(\Input::get('state')==0) //compose
 		{
 			$e = array_map('trim',explode(',', $dst));
 			foreach ($e as $key) 
@@ -61,23 +62,25 @@ class InboxController extends Controller {
 					$group = Group::where('Name','=',$key)->first();
 					if($contact)
 					{
-						return Outbox::create(['DestinationNumber'=>$contact['Number'], 'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id]);
+						return Outbox::create(['DestinationNumber'=>$contact['Number'], 'SendingDateTime'=>$schedule,
+							'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id]);
 					}
 					else
 					{
 						if($group)
 						{
-							return Outbox::SendToGroup($group->Name, $msg);
+							return Outbox::SendToGroup($group->Name, $msg, $schedule);
 						}
 						else
 						{
-							return Outbox::create(['DestinationNumber'=>$key, 'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id ]);
+							return Outbox::create(['DestinationNumber'=>$key, 'SendingDateTime'=>$schedule,
+								'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id ]);
 						}
 					}
 				}
 			}
 		}
-		else
+		else //conversation
 		{
 			return Outbox::create(['DestinationNumber'=>$dst, 'TextDecoded'=>$msg, 'CreatorID'=>'users.'.\Auth::user()->id]);
 		}
@@ -119,14 +122,17 @@ class InboxController extends Controller {
 		if(\Request::ajax()) 
 		{
 			$ids = explode(',', $id);
-			$ida = array_map(function($str){return str_replace('0', '+62', $str);}, $ids);
+			$ida = array_map(function($str){return preg_replace('/^0/', '+62', $str);}, $ids);
 			if(\Session::get('group')=='On'){
 				$db = \DB::table('inbox')->whereIn('SenderNumber', $ids)->delete();
+				$db = \DB::table('inbox')->whereIn('SenderNumber', $ida)->delete();
 				$db = \DB::table('sentitems')->whereIn('DestinationNumber', $ids)->delete();
 				$db = \DB::table('sentitems')->whereIn('DestinationNumber', $ida)->delete();
+				$db = \DB::table('outbox')->whereIn('DestinationNumber', $ids)->delete();
+				$db = \DB::table('outbox')->whereIn('DestinationNumber', $ida)->delete();
 			}else
 			{
-				$db = \DB::table('inbox')->whereIn('ID', $ids)->delete();
+				$db = \DB::table('inbox')->whereIn('ID', $id)->delete();
 			}
 
 			return $db;	
