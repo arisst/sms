@@ -70,11 +70,15 @@
 	</nav>
 	<script src="{{asset('js/jquery.min.js?v2.1.3')}}"></script>
 	<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+	<script src="{{asset('js/bootstrap.min.js?v3.3.1')}}"></script>
 
 	@yield('content')
-
+	<script type="text/javascript">
+		$("[data-toggle=popover]").popover({
+			placement:'bottom'
+		});
+	</script>
 	<!-- Scripts -->
-	<script src="{{asset('js/bootstrap.min.js?v3.3.1')}}"></script>
 	<script src="{{asset('js/sweet-alert.min.js')}}"></script>
 
 </body>

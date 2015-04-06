@@ -93,11 +93,6 @@ class ContactController extends Controller {
 		}
 	}
 
-	public function edit($id)
-	{
-		//
-	}
-
 	public function update($id)
 	{
 		$db = Contact::find($id);

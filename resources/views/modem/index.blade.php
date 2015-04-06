@@ -144,7 +144,7 @@
 			current_page = data['current_page'];
 			last_page = data['last_page'];
 			$.each(data['data'], function(i, item) {
-			    res += '<a id="l-'+item.IMEI+'" href="#" onclick="Detail('+item.IMEI+');" class="list-group-item"><p class="list-group-item-heading"><b>IMEI : '+item.IMEI+'</b></p><p class="list-group-item-text">'+item.Client+'</p></a>';
+			    res += '<a id="l-'+item.IMEI+'" href="#" onclick="Detail(\''+item.IMEI+'\');" class="list-group-item"><p class="list-group-item-heading"><b>IMEI : '+item.IMEI+'</b></p><p class="list-group-item-text">'+item.Client+'</p></a>';
 			})
 			$("#listcontact").html(res);
 		});

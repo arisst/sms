@@ -32,11 +32,6 @@ class GroupController extends Controller {
 		}
 	}
 
-	public function create()
-	{
-		//
-	}
-
 	public function store()
 	{
 		$rules = ['name' => 'required|unique:pbk_groups'];
@@ -77,11 +72,6 @@ class GroupController extends Controller {
 		{
 			abort(404);
 		}
-	}
-
-	public function edit($id)
-	{
-		//
 	}
 
 	public function update($id)

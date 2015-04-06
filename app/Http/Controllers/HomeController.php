@@ -2,6 +2,7 @@
 
 use sms\Inbox;
 use sms\Sent;
+use sms\Modem;
 class HomeController extends Controller {
 
 	public function __construct()
@@ -11,6 +12,7 @@ class HomeController extends Controller {
 
 	public function index()
 	{
+		// STATISTIK
 		$dbinbox = Inbox::statistic();
 		foreach ($dbinbox as $key) {
 			$category[] = $key->periode;
@@ -38,8 +40,8 @@ class HomeController extends Controller {
 		}
 		else
 		{
-			$signal = '53';
-			return view('home')->with('data', ['signal'=>$signal, 'category'=>$category]);
+			$signal = Modem::select('Signal')->first();
+			return view('home')->with('data', ['signal'=>$signal['Signal'], 'category'=>$category]);
 		}
 	}
 }

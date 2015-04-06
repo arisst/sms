@@ -9,6 +9,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					Format SMS / Kata Kunci
+					<span data-toggle="popover" title="Kata Kunci (Keyword)" data-content="Untuk menyaring isi SMS berdasarkan kata tertentu yang selanjutnya dapat diotomatisasi seperti diteruskan ke website lain melalui URL, menambahkan nomor ke kontak dan group, dan membalas otomatis" class="glyphicon glyphicon-question-sign"></span>
 					<div class="pull-right">
 						<a class="btn-sm" title="Tambah format baru" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Tambah baru</a>
 					</div>
@@ -50,7 +51,7 @@
 									    <label for="keyword" class="col-sm-2 control-label">Kata Kunci</label>
 									    <div class="col-sm-10">
 									      <input type="text" name="keyword" class="form-control input-sm" id="keyword" placeholder="Kata Kunci">
-									      <p class="help-block">Untuk menyaring SMS yang masuk dengan kata pertama</p>
+									      <p class="help-block">Untuk menyaring SMS yang masuk dengan <abbr data-toggle="popover" title="Kata Kunci" data-html="true" data-content="Bisa menggunakan huruf kecil atau besar.<br>Contoh: SINABUNG<br>Akan menyaring isi SMS yang masuk dengan kata awal SINABUNG">kata kunci</abbr></p>
 									    </div>
 									  </div>
 
@@ -67,7 +68,7 @@
 									    <label for="url" class="col-sm-2 control-label">URL *</label>
 									    <div class="col-sm-10">
 									      <input type="text" name="url" class="form-control input-sm" id="url" placeholder="URL">
-									      <p class="help-block">Untuk meneruskan data ke website lain</p>
+									      <p class="help-block">Untuk meneruskan data ke website lain dengan <abbr data-toggle="popover" title="Format URL" data-html="true" data-content="${time} : waktu SMS diterima<br>${sender} : nomor pengirim<br>${content} : isi sms penuh<br>${message} : isi sms tanpa kata kunci.<br><br>Contoh:<br>http://a.id/?t=${time}&m=${message}">format URL</abbr></p>
 									    </div>
 									  </div>
 

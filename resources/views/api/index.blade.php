@@ -160,7 +160,7 @@
 			current_page = data['current_page'];
 			last_page = data['last_page'];
 			$.each(data['data'], function(i, item) {
-			    res += '<a id="l-'+item.id+'" href="#" onclick="Detail('+item.id+');" class="list-group-item"><p class="list-group-item-heading"><input name="cid[]" value="'+item.id+'" type="checkbox" class="cg"> <b>'+item.name+'</b></p><p class="list-group-item-text">'+item.token+'</p></a>';
+			    res += '<a id="l-'+item.id+'" href="#" onclick="Detail(\''+item.id+'\');" class="list-group-item"><p class="list-group-item-heading"><input name="cid[]" value="'+item.id+'" type="checkbox" class="cg"> <b>'+item.name+'</b></p><p class="list-group-item-text">'+item.token+'</p></a>';
 			})
 			$("#listcontact").html(res);
 		});
