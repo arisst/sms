@@ -9,14 +9,6 @@ class Inbox extends Model {
 	public static function grouping()
 	{
 		$term = \Input::get('term');
-		/*return \DB::table('view_conversation')
-					->select('view_conversation.*',\DB::raw('max(waktu) as wkt'),'pbk.Name')
-					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
-					->groupBy('hp')
-					->orderBy('wkt','desc')
-					->get();*/
-
-		// return \DB::select(\DB::raw("SELECT sub.*,pbk.Name FROM (SELECT * from view_conversation ORDER BY waktu desc) AS sub left join pbk on(pbk.Number=sub.hp) GROUP BY sub.hp ORDER BY waktu desc"));
 		return \DB::table(\DB::raw('(SELECT * from view_conversation ORDER BY waktu desc) AS sub'))
 						->select(\DB::raw('sub.*,pbk.Name'))
 						->leftJoin('pbk','pbk.Number','=','sub.hp')
@@ -24,7 +16,6 @@ class Inbox extends Model {
 						->orWhere('pbk.Name','like','%'.$term.'%')
 						->groupBy('sub.hp')
 						->orderBy('waktu','desc')
-						// ->paginate();
 						->get();
 	}
 	
@@ -86,8 +77,9 @@ class Inbox extends Model {
 	public static function conversation($hp)
 	{
 		return \DB::table('view_conversation')
-					->select('view_conversation.*','pbk.Name')
+					->select('view_conversation.*','pbk.Name','users.username as author_name')
 					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
+					->leftJoin('users','users.id','=', \DB::raw('SUBSTRING_INDEX(view_conversation.author,".",-1)'))
 					->where('hp', '=', $hp)
 					->orderBy('waktu','asc')
 					->get();
@@ -98,6 +90,14 @@ class Inbox extends Model {
 		return \DB::table('inbox')
 					->where('ID',$id)
 					->update(['Processed'=>'true']);
+	}
+
+	public static function statistic()
+	{
+		return \DB::table('inbox')
+					->select('ReceivingDateTime',\DB::raw('count(ReceivingDateTime) as total'), \DB::raw('DATE_FORMAT(ReceivingDateTime, "%Y-%m") as periode'))
+					->groupBy('periode')
+					->get();
 	}
 
 }

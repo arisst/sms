@@ -61,4 +61,13 @@ class Sent extends Model {
 		}
 	}
 
+	public static function statistic()
+	{
+		return \DB::table('sentitems')
+					->select('SendingDateTime',\DB::raw('count(SendingDateTime) as total'), \DB::raw('DATE_FORMAT(SendingDateTime, "%Y-%m") as periode'))
+					->groupBy('periode')
+					->get();
+	}
+
+
 }

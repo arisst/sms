@@ -13,6 +13,9 @@
 
 // Route::get('/', 'WelcomeController@index');
 
+Route::controller('mobile','MobileController');
+
+Route::get('home', 'HomeController@index');
 Route::get('/', 'HomeController@index');
 Route::resource('inbox', 'InboxController');
 Route::resource('outbox', 'OutboxController');
@@ -20,6 +23,7 @@ Route::resource('contact', 'ContactController');
 Route::resource('group', 'GroupController');
 Route::resource('keyword', 'KeywordController');
 Route::resource('api', 'ApiController');
+Route::resource('modem', 'ModemController');
 Route::get('kirimsms', 'PublicController@kirimsms');
 Route::resource('sent', 'SentController');
 

@@ -34,7 +34,6 @@
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					{{-- <li @if(Request::is('home*')) class="active" @endif><a href="{{url('/')}}">Home</a></li> --}}
 					<li @if(Request::is('inbox*')) class="active" @endif><a href="{{url('inbox')}}">KOTAK MASUK</a></li>
 					<li class="dropdown @if(Request::is('contact*')||Request::is('group*')) active @endif">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">KONTAK <span class="caret"></span></a>
@@ -42,10 +41,15 @@
 								<li @if(Request::is('contact*')) class="active" @endif><a href="{{url('contact')}}">LIST KONTAK</a></li>
 								<li @if(Request::is('group*')) class="active" @endif><a href="{{url('group')}}">GROUP KONTAK</a></li>
 							</ul>
-						</li>
-					{{-- <li><a href="{{url('sent')}}">Sent</a></li> --}}
+					</li>
 					<li @if(Request::is('keyword*')) class="active" @endif><a href="{{url('keyword')}}">KATA KUNCI</a></li>
 					<li @if(Request::is('api*')) class="active" @endif><a href="{{url('api')}}">API</a></li>
+					<li class="dropdown @if(Request::is('modem*')) active @endif">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">PENGATURAN <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li @if(Request::is('modem*')) class="active" @endif><a href="{{url('modem')}}">INFO MODEM</a></li>
+							</ul>
+					</li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
