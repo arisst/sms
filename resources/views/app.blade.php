@@ -48,6 +48,7 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">PENGATURAN <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li @if(Request::is('modem*')) class="active" @endif><a href="{{url('modem')}}">INFO MODEM</a></li>
+								<li @if(Request::is('user*')) class="active" @endif><a href="{{url('user')}}">USER</a></li>
 							</ul>
 					</li>
 				</ul>

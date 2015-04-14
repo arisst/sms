@@ -24,6 +24,8 @@ Route::resource('group', 'GroupController');
 Route::resource('keyword', 'KeywordController');
 Route::resource('api', 'ApiController');
 Route::resource('modem', 'ModemController');
+Route::resource('user', 'UserController');
+
 Route::get('kirimsms', 'PublicController@kirimsms');
 Route::resource('sent', 'SentController');
 
