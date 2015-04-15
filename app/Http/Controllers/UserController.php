@@ -64,8 +64,11 @@ class UserController extends Controller {
 	{
 		$db = User::find($id);
 		$db->name = \Input::get('name');
-		$db->token = \Input::get('token');
-		$db->access_ip = \Input::get('access_ip');
+		$db->email = \Input::get('email');
+		$db->username = \Input::get('username');
+		if(\Input::has('password')) $db->password = \Hash::make(\Input::get('password'));
+		$db->group = \Input::get('group');
+		$db->api_key = \Input::get('api_key');
 		$db->save();
 		return \Response::json(['id'=>$db->id]);
 	}

@@ -145,19 +145,6 @@
 		}
 	});
 
-	/* AUTOCOMPLETE */
-	$(function() {
-		$("#group").autocomplete(
-		{
-			 source: "{{url('group')}}/0",
-			 select: function( event, ui ) {
-				$("#group").val(ui.item.label);
-				$("#groupid").val(ui.item.id);
-				return false;
-			}
-		})
-	});
-
 	/* CHECK FUNCTION */
 	function checkAll(source) {
 		// $("#checkdel").show();
@@ -247,6 +234,8 @@
 					$('input[name="name"]').val(data['name']);
 					$('input[name="email"]').val(data['email']);
 					$('input[name="username"]').val(data['username']);
+					$('input[name="password"]').val('');
+					$('input[name="passconf"]').val('');
 					$('#group').val(data['group']);
 					$('input[name="api_key"]').val(data['api_key']);
 					
@@ -283,13 +272,6 @@
 	/* ADD AND EDIT TRANSACTION */
 	function Add(id) 
 	{
-		var edit = method = '';
-		if(id){ 
-			edit = '/'+id;
-			method = 'PUT'; 
-		}else{
-			method = 'POST'; 
-		}
 		var nama = $("input#name").val();
 		var email = $('input[name="email"]').val();
 		var username = $('input[name="username"]').val();
@@ -297,7 +279,24 @@
 		var api_key = $('input[name="api_key"]').val();
 		var password = $('input[name="password"]').val();
 		var passconf = $('input[name="passconf"]').val();
-		if(nama && email && username && group && password && (password==passconf))
+
+		var edit = method = '';
+		var pwd = 0;
+		if(id){ 
+			edit = '/'+id;
+			method = 'PUT';
+			if (password == passconf) {
+				pwd = 1;
+			}
+		}else{
+			method = 'POST';
+			if(password && (password==passconf)){
+				pwd = 1;
+			}
+		}
+
+
+		if(nama && email && username && group && pwd)
 		{
 			$.post("{{url('user')}}"+edit,
 			{

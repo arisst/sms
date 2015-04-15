@@ -16,15 +16,19 @@
 								@endforeach
 							</ul>
 						</div>
+					@elseif(\Input::get('unconfirmed')==1)
+						<div class="alert alert-danger">
+							<strong>Hmm..!</strong> User belum aktif.
+						</div>
 					@endif
 
 					<form class="form-horizontal" role="form" method="POST" action="{{action('Auth\AuthController@postLogin')}}">
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">Alamat Email</label>
+							<label class="col-md-4 control-label">Alamat Email / Username</label>
 							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
+								<input type="text" class="form-control" name="email" value="{{ old('email') }}">
 							</div>
 						</div>
 
