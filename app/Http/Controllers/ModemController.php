@@ -11,6 +11,7 @@ class ModemController extends Controller {
 
 	function __construct() {
 		$this->middleware('auth');
+		if(\Auth::user()->group!=1) abort(403);
 	}
 
 	public function index()

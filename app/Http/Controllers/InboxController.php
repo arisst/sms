@@ -9,6 +9,7 @@ use sms\Inbox;
 use sms\Outbox;
 use sms\Contact;
 use sms\Group;
+use sms\Keyword;
 
 class InboxController extends Controller {
 
@@ -21,8 +22,7 @@ class InboxController extends Controller {
 	{
 		if(\Request::ajax()) 
 		{
-			$term = \Input::get('term');
-			$db = Inbox::grouping($term);
+			$db = Inbox::grouping();
 			return \Response::json($db);
 		}
 		else
@@ -34,17 +34,10 @@ class InboxController extends Controller {
 				$db = Inbox::listing(20);
 				$view = 'inbox.inbox';
 			}
-			return view($view)->with('data');
+			$data['list_keyword'] = Keyword::select('keyword')->get();
+			return view($view)->with('data',$data);
 		}
 	}
-
-
-	public function create()
-	{
-		// $db = Inbox::where('isi','regexp','');
-		// return $;
-	}
-
 
 	public function store()
 	{

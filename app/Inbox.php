@@ -9,12 +9,17 @@ class Inbox extends Model {
 	public static function grouping()
 	{
 		$term = \Input::get('term');
-		return \DB::table(\DB::raw('(SELECT * from view_conversation ORDER BY waktu desc) AS sub'))
-						->select(\DB::raw('sub.*,pbk.Name'))
-						->leftJoin('pbk','pbk.Number','=','sub.hp')
-						->where('sub.hp','like','%'.$term.'%')
-						->orWhere('pbk.Name','like','%'.$term.'%')
-						->groupBy('sub.hp')
+		$filter = \Input::get('filter');
+		$db = \DB::table(\DB::raw('(SELECT * from view_conversation ORDER BY waktu desc) AS sub'))
+						->select(\DB::raw('sub.id,sub.isi,sub.hp,pbk.Name'))
+						->leftJoin('pbk','pbk.Number','=','sub.hp');
+		if($term)
+		{ 
+			$db->where('sub.hp','like','%'.$term.'%');
+			$db->orWhere('pbk.Name','like','%'.$term.'%');
+		}
+		if($filter != 'Semua' && $filter!='') $db->where('isi','like',$filter.'%');
+		return	$db->groupBy('sub.hp')
 						->orderBy('waktu','desc')
 						->get();
 	}

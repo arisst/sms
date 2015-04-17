@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<title>Error 403 Forbidden.</title>
 		<link href='http://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 
 		<style>
@@ -34,8 +35,8 @@
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">Be right back.</div>
-				<p><a target="_blank" href="https://github.com/arisst/sms/issues/new?title=503+({{Request::url()}})">Issues report (Github)</a></p>
+				<div class="title">Forbidden.</div>
+				<p><a target="_blank" href="https://github.com/arisst/sms/issues/new?title=403+({{Request::url()}})">Issues report (Github)</a></p>
 			</div>
 		</div>
 	</body>

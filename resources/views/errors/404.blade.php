@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<title>Error 404: Not Found.</title>
 		<link href='http://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 
 		<style>
@@ -34,8 +35,8 @@
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">Be right back.</div>
-				<p><a target="_blank" href="https://github.com/arisst/sms/issues/new?title=503+({{Request::url()}})">Issues report (Github)</a></p>
+				<div class="title">Page Not Found.</div>
+				<p><a target="_blank" href="https://github.com/arisst/sms/issues/new?title=404+({{Request::url()}})">Issues report (Github)</a></p>
 			</div>
 		</div>
 	</body>

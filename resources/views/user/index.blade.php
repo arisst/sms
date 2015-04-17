@@ -18,7 +18,28 @@
 					
 				<div class="row">
 					<div class="col-md-4">
-					<input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama">
+
+					<div class="input-group">
+					  <input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama">
+				      <div class="input-group-btn">
+				        <button type="button" id="filter" value="0" class="btn btn-default dropdown-toggle input-sm" data-toggle="dropdown" aria-expanded="false">Semua <span class="caret"></span></button>
+				        <ul class="dropdown-menu" role="menu">
+				          <li><a href="#">Semua</a></li>
+				          <li class="divider"></li>
+				          <li><a href="#">Administrator</a></li>
+				          <li><a href="#">User</a></li>
+				          <li><a href="#">Unconfirmed</a></li>
+				        </ul>
+				      </div><!-- /btn-group -->
+				      <script type="text/javascript">
+				      	$(".dropdown-menu li a").click(function(){
+							$(this).parents(".input-group-btn").find('.btn').html($(this).text()+' <span class="caret"></span>');
+							$(this).parents(".input-group-btn").find('.btn').html($(this).text()+' <span class="caret"></span>');
+							getData($('#search').val(),1,$(this).text());
+						});
+				      </script>
+				    </div>
+
 					<div id="listarea" style="height:470px;overflow-x:hidden;overflow-y:auto">
 						<div class="list-group" id="listcontact"></div>
 						<div id="pagination" align="center">
@@ -116,7 +137,8 @@
 		// console.log(part);
 		if(part[0]=='#!' && part[1]=='add'){
 			formAdd(part[2]);
-		}else{
+		}
+		else{
 			detail = (typeof detail !== 'undefined') ? detail : '';
 			Detail(detail);
 		}
@@ -127,7 +149,8 @@
 	$(document).ready(function(){
 		/* SEARCH */
 		$("#search").keyup(function(){
-			getData($(this).val());
+			filter = $('#filter').text();
+			getData($(this).val(),1,filter);
 		});
 	});
 
@@ -155,16 +178,17 @@
 	}
 
 	/* GET DATA FROM SERVER */
-	function getData (term,page) {
+	function getData (term,page,filter) {
 		term = typeof term !== 'undefined' ? term : '';
 		page = typeof page !== 'undefined' ? page : 1;
+		filter = typeof filter !== 'undefined' ? filter : '';
 		$(document).bind("ajaxStart.mine", function() {
 			$("#listcontact").html('<img src="{{asset("img/loadsmall.gif")}}">');
 		});
 		$(document).bind("ajaxStop.mine", function() {
 			// alert('loaded');
 		});
-		$.get("{{url('user')}}?page="+page+"&term="+term, function(data,status){
+		$.get("{{url('user')}}?page="+page+"&term="+term+"&filter="+filter, function(data,status){
 			var res= '';
 			current_page = data['current_page'];
 			last_page = data['last_page'];

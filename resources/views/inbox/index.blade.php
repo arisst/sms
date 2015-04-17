@@ -31,19 +31,38 @@
 				<div class="panel-body">
 				<div class="row">
 					<div class="col-md-4">
-					<input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama atau nomor">
-					<div style="height:500px;overflow-x:hidden;overflow-y:auto">
-						<div class="list-group" id="listinbox">
-							{{-- LIST OF CONTENT --}}
+						<div class="input-group">
+							<input type="search" id="search" class="form-control input-sm" placeholder="Pencarian: masukkan nama atau nomor">
+					      	<div class="input-group-btn">
+						        <button type="button" id="filter" value="0" class="btn btn-default dropdown-toggle input-sm" data-toggle="dropdown" aria-expanded="false">Semua<span class="caret"></span></button>
+						        <ul class="dropdown-menu" role="menu">
+						          <li><a href="#">Semua</a></li>
+						          <li class="divider"></li>
+						        @foreach($data['list_keyword'] as $key)
+						          <li><a href="#">{{$key->keyword}}</a></li>
+						        @endforeach
+						        </ul>
+					      	</div><!-- /btn-group -->
+					  	</div>
+				      	<script type="text/javascript">
+				      	$(".dropdown-menu li a").click(function(){
+							$(this).parents(".input-group-btn").find('.btn').html($(this).text()+'<span class="caret"></span>');
+							getData($('#search').val(),1,$(this).text());
+						});
+				      </script>
+
+						<div style="height:500px;overflow-x:hidden;overflow-y:auto">
+							<div class="list-group" id="listinbox">
+								{{-- LIST OF CONTENT --}}
+							</div>
+							{{-- <div id="pagination" align="center">
+							  <ul class="pagination pagination-sm">
+							    <li><a id="prev" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+							    <li><a id="next" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+							  </ul>
+							</div> --}}
 						</div>
-						{{-- <div id="pagination" align="center">
-						  <ul class="pagination pagination-sm">
-						    <li><a id="prev" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-						    <li><a id="next" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-						  </ul>
-						</div> --}}
-					</div>
-					<a class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a>
+						<a class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a>
 					</div>
 
 					<div class="col-md-8">
@@ -164,7 +183,8 @@
 	$(document).ready(function(){
 		/* SEARCH */
 		$("#search").keyup(function(){
-			getData($(this).val());
+			filter = $('#filter').text();
+			getData($(this).val(),1,filter);
 		});
 	});
 
@@ -237,26 +257,46 @@
 		// document.getElementById("del").innerHTML = '<a href="#" onClick="Delete()">Delete data ini?</a>';
 	}
 
+	function loadListData (page,term,filter,callback) {
+		$.get("{{url('inbox')}}", {page:page,term:term,filter:filter}, callback)
+		.done(function (res) {
+    		if(filter && filter!=='Semua') localStorage.setItem("inboxList-"+filter, JSON.stringify(res));
+		});
+	}
+
+	function showListData (data,status) {
+		var res=nama= '';
+		// current_page = data['current_page'];
+		// last_page = data['last_page'];
+		$.each(data, function(i, item) {
+			if(item.Name!==null){nama = item.Name;}else{nama=item.hp;}
+		    res += '<div id="l-'+item.hp+'" onclick="Detail(\''+item.hp+'\');" class="list-group-item" style="cursor:pointer;"><p class="list-group-item-heading"><input name="cid[]" value="'+item.hp+'" type="checkbox" class="cg"> <b>'+nama+'</b><a class="pull-right" title="Add to contact" href={{url("contact")}}#!/add/'+item.hp+'><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a></p><p class="list-group-item-text">'+item.isi.substring(0,30)+'</p></div>';
+		});
+		$("#listinbox").html(res);
+	}
+
 	/* GET DATA FROM SERVER */
-	function getData (term,page) {
+	function getData (term,page,filter) {
 		term = typeof term !== 'undefined' ? term : '';
 		page = typeof page !== 'undefined' ? page : 1;
+		filter = typeof filter !== 'undefined' ? filter : '';
 		$(document).bind("ajaxStart.mine", function() {
 			$("#listinbox").html('<img src="{{asset("img/loadsmall.gif")}}">');
 		});
 		$(document).bind("ajaxStop.mine", function() {
 			// alert('loaded');
 		});
-		$.get("{{url('inbox')}}?page="+page+"&term="+term, function(data,status){
-			var res=nama= '';
-			current_page = data['current_page'];
-			last_page = data['last_page'];
-			$.each(data, function(i, item) {
-				if(item.Name!==null){nama = item.Name;}else{nama=item.hp;}
-			    res += '<div id="l-'+item.hp+'" onclick="Detail(\''+item.hp+'\');" class="list-group-item" style="cursor:pointer;"><p class="list-group-item-heading"><input name="cid[]" value="'+item.hp+'" type="checkbox" class="cg"> <b>'+nama+'</b><a class="pull-right" title="Add to contact" href={{url("contact")}}#!/add/'+item.hp+'><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a></p><p class="list-group-item-text">'+item.isi.substring(0,30)+'</p></div>';
-			})
-			$("#listinbox").html(res);
-		});
+		
+		if(localStorage.getItem("inboxList-"+filter)){
+			dt = JSON.parse(localStorage.getItem("inboxList-"+filter));
+
+			console.log(dt);
+			showListData(dt);
+		}
+		else{
+			loadListData(page,term,filter,showListData);
+		}
+		
 		$(document).unbind(".mine");
 	}
 

@@ -5,3 +5,4 @@
 *.sql
 
 public/htaccess
+public/.htaccess

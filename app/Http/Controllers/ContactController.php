@@ -18,12 +18,17 @@ class ContactController extends Controller {
 		if(\Request::ajax()) 
 		{
 			$term = \Input::get('term');
-			$db = Contact::where('Name','like','%'.$term.'%')->orWhere('Number','like','%'.$term.'%')->orderBy('Name','asc')->paginate();
-			return \Response::json($db);
+			$filter = \Input::get('filter');
+			$db = Contact::select('*');
+			if($term) $db->where('Name','like','%'.$term.'%')->orWhere('Number','like','%'.$term.'%');
+			if($filter) $db->where('GroupID',$filter);
+			$dbr = $db->orderBy('Name','asc')->paginate();
+			return \Response::json($dbr);
 		}
 		else
 		{
-			return view('contact.index');
+			$data['list_group'] = Group::get();
+			return view('contact.index')->with('data',$data);
 		}
 	}
 

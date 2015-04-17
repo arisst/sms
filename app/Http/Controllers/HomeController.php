@@ -44,4 +44,9 @@ class HomeController extends Controller {
 			return view('home')->with('data', ['signal'=>$signal['Signal'], 'category'=>$category]);
 		}
 	}
+
+	public function profile()
+	{
+		return view('user.profile');
+	}
 }

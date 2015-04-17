@@ -11,6 +11,7 @@ class UserController extends Controller {
 
 	function __construct() {
 		$this->middleware('auth');
+		if(\Auth::user()->group!=1) abort(403);
 	}
 
 	public function index()
@@ -18,8 +19,27 @@ class UserController extends Controller {
 		if(\Request::ajax()) 
 		{
 			$term = \Input::get('term');
-			$db = User::where('name','like','%'.$term.'%')->orderBy('name','asc')->paginate();
-			return \Response::json($db);
+			$filter = \Input::get('filter');
+			switch ($filter) 
+			{
+				case 'Administrator':
+					$group = 1;
+					break;
+				case 'User':
+					$group = 2;
+					break;
+				case 'Unconfirmed':
+					$group = 3;
+					break;
+				default:
+					$group = null;
+					break;
+			}
+			$db = User::where('name','like','%'.$term.'%');
+			if($group) $db->where('group',$group);
+			$db->orderBy('name','asc');
+			$dbr = $db->paginate();
+			return \Response::json($dbr);
 		}
 		else
 		{
