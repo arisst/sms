@@ -105,11 +105,6 @@ class InboxController extends Controller {
 		return redirect()->back();
 	}
 
-	public function update($id)
-	{
-		//
-	}
-
 	public function destroy($id)
 	{
 		if(\Request::ajax()) 
@@ -130,5 +125,23 @@ class InboxController extends Controller {
 
 			return $db;	
 		}
+	}
+
+	public function export()
+	{
+		$hp = \Input::get('hp');
+		// $ids = explode(',', $hp);
+		// $ida = array_map(function($str){return preg_replace('/^0/', '+62', $str);}, $ids);
+
+		$data = Inbox::conversationExport($hp);
+		$contents = view('inbox.export')->with('data', $data);
+
+		$headers = array(
+		      'Content-Type' => 'application/vnd.ms-excel',
+		      'Content-Disposition' => 'attachment; filename="InboxExport.xls"',
+		  );
+
+		return \Response::make($contents,200,$headers);
+
 	}
 }

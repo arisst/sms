@@ -36,6 +36,9 @@ Route::controllers([
     'password' => 'Auth\PasswordController',
 ]);
 Route::get('profile','HomeController@profile');
+Route::post('profile','HomeController@doProfile');
+
+Route::post('inbox/export','InboxController@export');
 
 // // Oauth2 server routes (route to respond to the access token requests)
 // Route::post('oauth/access_token', function() {

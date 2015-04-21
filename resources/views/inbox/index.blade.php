@@ -24,7 +24,7 @@
 					<div class="pull-right">
 						<a class="btn-sm" title="Buat SMS baru" href="inbox"><span style="color:green" class="glyphicon glyphicon-envelope"></span>SMS baru</a>
 						<?php $gr = (Session::get('group')=='Off') ? '1' : '0' ; ?>
-							<a href="{{url('inbox/'.$gr.'/edit')}}" class="btn btn-default btn-sm <?php if(!$gr) echo 'active'; ?>" >Grouping : {{Session::get('group')}}</a>
+							<!-- <a href="{{url('inbox/'.$gr.'/edit')}}" class="btn btn-default btn-sm <?php if(!$gr) echo 'active'; ?>" >Grouping : {{Session::get('group')}}</a> -->
 					</div>
 				</div>
 
@@ -62,7 +62,12 @@
 							  </ul>
 							</div> --}}
 						</div>
-						<a class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a>
+						{{-- <a class="btn btn-danger" href="#" onClick="Hapus()">Hapus yang dipilih?</a> --}}
+						<select id="action" class="form-control input-sm">
+							<option value="0" selected="selected">--Kelola pilihan--</option>
+							<option value="1">Hapus</option>
+							<option value="2">Export</option>
+						</select>
 					</div>
 
 					<div class="col-md-8">
@@ -203,6 +208,17 @@
 		}
 	});
 
+	// action select
+	$("#action").change(function(){
+		if($(this).val() == '1'){
+			Hapus();
+			$("#action").val('0');
+		}else if($(this).val() == '2'){
+			Export();
+			$("#action").val('0');
+		}
+	});
+
 //AUTOCOMPLETE destination number
 	$(function() {
 		function split( val ) {
@@ -265,12 +281,12 @@
 	}
 
 	function showListData (data,status) {
-		var res=nama= '';
+		var res=nama=saveicon= '';
 		// current_page = data['current_page'];
 		// last_page = data['last_page'];
 		$.each(data, function(i, item) {
-			if(item.Name!==null){nama = item.Name;}else{nama=item.hp;}
-		    res += '<div id="l-'+item.hp+'" onclick="Detail(\''+item.hp+'\');" class="list-group-item" style="cursor:pointer;"><p class="list-group-item-heading"><input name="cid[]" value="'+item.hp+'" type="checkbox" class="cg"> <b>'+nama+'</b><a class="pull-right" title="Add to contact" href={{url("contact")}}#!/add/'+item.hp+'><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a></p><p class="list-group-item-text">'+item.isi.substring(0,30)+'</p></div>';
+			if(item.Name!==null){saveicon='';nama = item.Name;}else{saveicon='<a class="pull-right" title="Add to contact" href={{url("contact")}}#!/add/'+item.hp+'><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a>';nama=item.hp;}
+		    res += '<div id="l-'+item.hp+'" onclick="Detail(\''+item.hp+'\');" class="list-group-item" style="cursor:pointer;"><p class="list-group-item-heading"><input name="cid[]" value="'+item.hp+'" type="checkbox" class="cg"> <b>'+nama+'</b>'+saveicon+'</p><p class="list-group-item-text">'+item.isi.substring(0,30)+'</p></div>';
 		});
 		$("#listinbox").html(res);
 	}
@@ -335,6 +351,42 @@
 				});
 		}else{
 			swal({title: "Pilih data yang akan dihapus!",text: "Akan tertutup setelah 2 detik.",timer: 2000,type: "info" });
+		}
+	}
+
+	function Export(){
+		var checkboxes = document.getElementsByName('cid[]');
+		var vals = [];
+		for (var i=0, n=checkboxes.length;i<n;i++) {
+		  if (checkboxes[i].checked) 
+		  {
+		  vals[vals.length] = checkboxes[i].value;
+		  }
+		}
+		if(vals.length){
+			swal({
+				title: "Export data?",
+				text: "Anda aka mengeksport data yang dipilih!",   
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "Export!",   
+				closeOnConfirm: false }, 
+
+				function(){   
+					$.post("{{url('inbox')}}/export",
+					{
+						hp:vals,
+						_token:"{{csrf_token()}}"
+					},
+					function(data,status){
+						if(status=='success'){
+					    	$("body").append("<iframe src='" + data.url+ "' style='display: none;' ></iframe>");
+						}
+					});
+				});
+		}else{
+			swal({title: "Pilih data yang akan diexport!",text: "Akan tertutup setelah 2 detik.",timer: 2000,type: "info" });
 		}
 	}
 

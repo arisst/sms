@@ -13,7 +13,7 @@
 
 				<div class="panel-body">
 					<div id="detail">
-						<form class="form-horizontal">
+						<form class="form-horizontal" id="form-profile">
 						  <div class="form-group">
 						    <label for="name" class="col-sm-2 control-label">Nama</label>
 						    <div class="col-sm-10">
@@ -65,5 +65,35 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+
+	$('#submit-button').click(function(){
+		var name = $('#name').val();
+		var email = $('#email').val();
+		var username = $('#username').val();
+		var password = $('#password').val();
+		var passconf = $('#passconf').val();
+		var api_key = $('#api_key').val();
+		if(name && email && username && (password == passconf)){
+			$.post("{{url('profile')}}", {
+				name:name,
+				email:email,
+				username:username,
+				password:password,
+				api_key:api_key
+			}, function(data, status){
+				swal({title: "info",text: data['msg'],type: "info" });
+				window.setTimeout(function(){location.reload()},1000);
+			});
+		}
+		else
+		{
+			swal({title: "Lengkapi data anda!",text: "Cek setiap inputan yang anda masukkan.",type: "error" });
+			$("#form-profile")[0].reset();
+		}
+	});
+
+</script>
 
 @endsection

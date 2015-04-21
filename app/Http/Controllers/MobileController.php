@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use sms\Contact;
 use sms\Group;
 use sms\User;
+use sms\Inbox;
 
 class MobileController extends Controller {
 
@@ -18,7 +19,7 @@ class MobileController extends Controller {
 			$email = \Input::get('email');
 			$password = \Input::get('password');
 
-			if(\Auth::attempt(['email' => $email, 'password'=>$password]))
+			if(\Auth::attempt(['email' => $email, 'password'=>$password]) || \Auth::attempt(['username' => $email, 'password'=>$password]))
 			{
 				if (\Auth::user()->group < 3) {
 					$response["error"] = FALSE;
@@ -99,6 +100,14 @@ class MobileController extends Controller {
 			$response["error"] = TRUE;
 			$response["error_msg"] = "TAG required!";
 		}
+		return \Response::json($response);
+	}
+
+	public function getInbox()
+	{
+		$db = Inbox::grouping();
+		$response["error"] = FALSE;
+		$response["data"] = $db;
 		return \Response::json($response);
 	}
 

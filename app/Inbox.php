@@ -33,6 +33,7 @@ class Inbox extends Model {
 		else
 		{
 			$db = \DB::table('inbox_groups');
+			// $db->select('ID','SenderNumber','ReceivingDateTime','TextDecoded','Processed');
 		}
 
 		if(\Input::has('filter'))
@@ -86,6 +87,17 @@ class Inbox extends Model {
 					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
 					->leftJoin('users','users.id','=', \DB::raw('SUBSTRING_INDEX(view_conversation.author,".",-1)'))
 					->where('hp', '=', $hp)
+					->orderBy('waktu','asc')
+					->get();
+	}
+
+	public static function conversationExport($listhp)
+	{
+		return \DB::table('view_conversation')
+					->select('view_conversation.*','pbk.Name','users.username as author_name')
+					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
+					->leftJoin('users','users.id','=', \DB::raw('SUBSTRING_INDEX(view_conversation.author,".",-1)'))
+					->whereIn('hp', $listhp)
 					->orderBy('waktu','asc')
 					->get();
 	}
