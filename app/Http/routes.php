@@ -29,7 +29,8 @@ Route::resource('user', 'UserController');
 Route::get('kirimsms', 'PublicController@kirimsms');
 Route::resource('sent', 'SentController');
 
-Route::get('daemon', 'KeywordController@daemon');
+// Route::get('daemon', 'KeywordController@daemon');
+Route::get('daemon', 'PublicController@eksekusi');
 
 Route::controllers([
     'auth' => 'Auth\AuthController',

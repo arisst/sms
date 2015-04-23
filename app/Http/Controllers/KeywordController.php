@@ -49,7 +49,7 @@ class KeywordController extends Controller {
 							unset($patterns);
 							unset($replacements);
 							$url_match = Keyword::url($url);
-							$query = ['sender' => $key->hp, 'message'=> trim(substr($key->isi, strlen($main_keyword))), 'content' => $key->isi, 'time' => $key->waktu];
+							$query = ['sender' => urlencode($key->hp), 'message'=> urlencode(trim(substr($key->isi, strlen($main_keyword)))), 'content' => urlencode($key->isi), 'time' => urlencode($key->waktu)];
 							foreach ($url_match as $key1) 
 							{
 								$patterns[] = '/\${'.$key1.'}/';
@@ -118,7 +118,7 @@ class KeywordController extends Controller {
 			{
 				//maaf keyword salah / tidak sesuai format
 				$db = Inbox::where('Processed','false')->get();
-				dd($db);
+				// dd($db);
 			} 
 		}
 
