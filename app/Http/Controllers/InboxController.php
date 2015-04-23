@@ -127,13 +127,13 @@ class InboxController extends Controller {
 		}
 	}
 
-	public function export()
+	public function export($hp)
 	{
-		$hp = \Input::get('hp');
-		// $ids = explode(',', $hp);
+		// $hp = \Input::get('hp');
+		$ids = explode(',', $hp);
 		// $ida = array_map(function($str){return preg_replace('/^0/', '+62', $str);}, $ids);
 
-		$data = Inbox::conversationExport($hp);
+		$data = Inbox::conversationExport($ids);
 		$contents = view('inbox.export')->with('data', $data);
 
 		$headers = array(

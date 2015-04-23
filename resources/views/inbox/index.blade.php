@@ -371,19 +371,10 @@
 				showCancelButton: true,   
 				confirmButtonColor: "#DD6B55",   
 				confirmButtonText: "Export!",   
-				closeOnConfirm: false }, 
+				closeOnConfirm: true }, 
 
 				function(){   
-					$.post("{{url('inbox')}}/export",
-					{
-						hp:vals,
-						_token:"{{csrf_token()}}"
-					},
-					function(data,status){
-						if(status=='success'){
-					    	$("body").append("<iframe src='" + data.url+ "' style='display: none;' ></iframe>");
-						}
-					});
+					location.href="{{url('inbox/export')}}/"+vals;
 				});
 		}else{
 			swal({title: "Pilih data yang akan diexport!",text: "Akan tertutup setelah 2 detik.",timer: 2000,type: "info" });
