@@ -299,8 +299,15 @@ function countText (e, val) {
 		// current_page = data['current_page'];
 		// last_page = data['last_page'];
 		$.each(data, function(i, item) {
-			if(item.Name!==null){saveicon='';nama = item.Name;}else{saveicon='<a class="pull-right" title="Add to contact" href={{url("contact")}}#!/add/'+item.hp+'><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a>';nama=item.hp;}
-		    res += '<div id="l-'+item.hp+'" onclick="Detail(\''+item.hp+'\');" class="list-group-item" style="cursor:pointer;"><p class="list-group-item-heading"><input name="cid[]" value="'+item.hp+'" type="checkbox" class="cg"> <b>'+nama+'</b>'+saveicon+'</p><p class="list-group-item-text">'+item.isi.substring(0,30)+'</p></div>';
+			if(item.Name!==null){
+				saveicon='';
+				nama = item.Name;
+			}else{
+				saveicon='<a class="pull-right" title="Add to contact" href={{url("contact")}}#!/add/'+item.hp+'><span style="color:green" class="glyphicon glyphicon-floppy-disk"></span></a>';
+				nama=item.hp;
+			}
+			if(item.status == 'false') nama = '<b>'+nama+'</b>';
+		    res += '<div id="l-'+item.hp+'" onclick="Detail(\''+item.hp+'\');" class="list-group-item" style="cursor:pointer;"><p class="list-group-item-heading"><input name="cid[]" value="'+item.hp+'" type="checkbox" class="cg"> '+nama+' '+saveicon+'</p><p class="list-group-item-text">'+item.isi.substring(0,30)+'</p></div>';
 		});
 		$("#listinbox").html(res);
 	}

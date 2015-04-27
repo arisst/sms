@@ -86,6 +86,8 @@ class InboxController extends Controller {
 		{
 			$data = Inbox::conversation($phone);
 			if($data){
+				Inbox::processNumber($phone);
+				Inbox::processNumber('+62'.substr($phone, 1));
 				return \Response::json($data);
 			}else{
 				return \Response::json(null, 404);

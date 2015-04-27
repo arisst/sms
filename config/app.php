@@ -145,6 +145,9 @@ return [
 		'sms\Providers\EventServiceProvider',
 		'sms\Providers\RouteServiceProvider',
 
+		// Twitter service provider
+		'Thujohn\Twitter\TwitterServiceProvider',
+
 		// Oauth2 server provider
 		'LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider',
 		'LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider',
@@ -198,6 +201,9 @@ return [
 		'View'      => 'Illuminate\Support\Facades\View',
 
 		'Authorizer' => 'LucaDegasperi\OAuth2Server\Facades\AuthorizerFacade',
+
+		// Twitter aliases
+		'Twitter' => 'Thujohn\Twitter\Facades\Twitter',
 
 	],
 

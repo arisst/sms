@@ -36,7 +36,7 @@
 		<div class="container">
 			<div class="content">
 				<div class="title">Forbidden.</div>
-				<p><a target="_blank" href="https://github.com/arisst/sms/issues/new?title=403+({{Request::url()}})">Issues report (Github)</a></p>
+				<p><a target="_blank" href="https://github.com/arisst/sms/issues/new?title=403+({{Request::url()}})&body=Group auth: {{Auth::user()->group}}">Issues report (Github)</a></p>
 			</div>
 		</div>
 	</body>

@@ -11,7 +11,7 @@ class Inbox extends Model {
 		$term = \Input::get('term');
 		$filter = \Input::get('filter');
 		$db = \DB::table(\DB::raw('(SELECT * from view_conversation ORDER BY waktu desc) AS sub'))
-						->select(\DB::raw('sub.id,sub.isi,sub.hp,pbk.Name'))
+						->select(\DB::raw('sub.id,sub.isi,sub.hp,pbk.Name,sub.status'))
 						->leftJoin('pbk','pbk.Number','=','sub.hp');
 		if($term)
 		{ 
@@ -108,6 +108,15 @@ class Inbox extends Model {
 	{
 		return \DB::table('inbox')
 					->where('ID',$id)
+					->where('Processed', 'false')
+					->update(['Processed'=>'true']);
+	}
+
+	public static function processNumber($SenderNumber)
+	{
+		return \DB::table('inbox')
+					->where('SenderNumber', $SenderNumber)
+					->where('Processed', 'false')
 					->update(['Processed'=>'true']);
 	}
 

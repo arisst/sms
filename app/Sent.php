@@ -61,11 +61,14 @@ class Sent extends Model {
 		}
 	}
 
-	public static function statistic()
+	public static function statistic($creator=null)
 	{
-		return \DB::table('sentitems')
-					->select('SendingDateTime',\DB::raw('count(SendingDateTime) as total'), \DB::raw('DATE_FORMAT(SendingDateTime, "%Y-%m") as periode'))
-					->groupBy('periode')
+		$db = \DB::table('sentitems')
+					->select('SendingDateTime',\DB::raw('count(SendingDateTime) as total'), \DB::raw('DATE_FORMAT(SendingDateTime, "%Y-%m") as periode'));
+		
+		if($creator) $db->where('CreatorID','like', $creator.'.%');
+		
+		return	$db->groupBy('periode')
 					->get();
 	}
 

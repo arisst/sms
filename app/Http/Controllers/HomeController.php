@@ -23,17 +23,41 @@ class HomeController extends Controller {
 		foreach ($dbsent as $key) {
 			$sent[] = $key->total;
 		}
+		$dbsent_api = Sent::statistic('apis');
+		foreach ($dbsent_api as $key) {
+			$sent_api[] = $key->total;
+		}
+		$dbsent_keyword = Sent::statistic('keywords');
+		foreach ($dbsent_keyword as $key) {
+			$sent_keyword[] = $key->total;
+		}
+		$dbsent_user = Sent::statistic('users');
+		foreach ($dbsent_user as $key) {
+			$sent_user[] = $key->total;
+		}
 	
 		if(\Request::ajax())
 		{
 			$data = [
 						[
-							'name'=>'Inbox',
+							'name'=>'Kotak Masuk',
 							'data'=> $inbox
 						],
 						[
-							'name'=>'Sent',
+							'name'=>'Terkirim',
 							'data'=> $sent
+						],
+						[
+							'name'=>'Api',
+							'data'=> $sent_api
+						],
+						[
+							'name'=>'Kata Kunci',
+							'data'=> $sent_keyword
+						],
+						[
+							'name'=>'User',
+							'data'=> $sent_user
 						]
 					];
 
