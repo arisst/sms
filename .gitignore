@@ -6,3 +6,5 @@
 
 public/htaccess
 public/.htaccess
+
+config/ttwitter.php
