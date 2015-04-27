@@ -83,9 +83,11 @@ class Inbox extends Model {
 	public static function conversation($hp)
 	{
 		return \DB::table('view_conversation')
-					->select('view_conversation.*','pbk.Name','users.username as author_name')
+					->select('view_conversation.*','pbk.Name','users.username as users_name','apis.name as apis_name','keywords.name as keywords_name')
 					->leftJoin('pbk','pbk.Number','=','view_conversation.hp')
 					->leftJoin('users','users.id','=', \DB::raw('SUBSTRING_INDEX(view_conversation.author,".",-1)'))
+					->leftJoin('apis','apis.id','=', \DB::raw('SUBSTRING_INDEX(view_conversation.author,".",-1)'))
+					->leftJoin('keywords','keywords.id','=', \DB::raw('SUBSTRING_INDEX(view_conversation.author,".",-1)'))
 					->where('hp', '=', $hp)
 					->orderBy('waktu','asc')
 					->get();

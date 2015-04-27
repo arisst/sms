@@ -276,7 +276,7 @@
 	function loadListData (page,term,filter,callback) {
 		$.get("{{url('inbox')}}", {page:page,term:term,filter:filter}, callback)
 		.done(function (res) {
-    		if(filter && filter!=='Semua') localStorage.setItem("inboxList-"+filter, JSON.stringify(res));
+    		// if(filter && filter!=='Semua') localStorage.setItem("inboxList-"+filter, JSON.stringify(res));
 		});
 	}
 
@@ -442,7 +442,24 @@
 							btn = btn0+' <a title="Delete" onclick="deleteId(\'outbox\', '+data[i]['id']+')" href="#'+phone+'"><span style="color:red" class="glyphicon glyphicon-trash"></span></a>';
 						}
 						if (data[i]['udh']!='') {tag='div';}else{tag='div';}
-						response +='<'+tag+' class="col-md-8 alert '+style+'">'+data[i]['isi']+'<br><small><a href="#!/author/'+data[i]['author']+'">'+data[i]['author_name']+'</a> : <a href="#!/detail/'+data[i]['id']+'">'+data[i]['waktu']+'</a></small><div class="pull-right">'+btn+'</div></'+tag+'>';
+						var auth = data[i]['author'].split('.');
+						var author = link = '';
+						console.log(auth[0]);
+						if(auth[0]=='apis'){
+							author = data[i]['apis_name'];
+							link = './api#'+auth[1];
+						}else if(auth[0]=='keywords'){
+							author = data[i]['keywords_name'];
+							link = './keyword#'+auth[1];
+						}else if(auth[0]=='users'){
+							author = data[i]['users_name'];
+							link = './user#'+auth[1];
+						}else{
+							author = data[i]['author'];
+							link = './modem';
+						}
+
+						response +='<'+tag+' class="col-md-8 alert '+style+'">'+data[i]['isi']+'<br><small><a href="'+link+'">'+author+'</a> : <a href="#!/detail/'+data[i]['id']+'">'+data[i]['waktu']+'</a></small><div class="pull-right">'+btn+'</div></'+tag+'>';
 					};
 			    	$('#detail').html(response);
 			    	var nama='';
