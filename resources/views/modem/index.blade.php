@@ -34,6 +34,12 @@
 								<div id="detail">
 									<form class="form-horizontal">
 									  <div class="form-group">
+									    <label for="ID" class="col-sm-2 control-label">ID</label>
+									    <div class="col-sm-10">
+									      <input type="text" name="ID" class="form-control input-sm" id="ID" readonly>
+									    </div>
+									  </div>
+									  <div class="form-group">
 									    <label for="imei" class="col-sm-2 control-label">IMEI</label>
 									    <div class="col-sm-10">
 									      <input type="text" name="imei" class="form-control input-sm" id="imei" readonly>
@@ -144,7 +150,7 @@
 			current_page = data['current_page'];
 			last_page = data['last_page'];
 			$.each(data['data'], function(i, item) {
-			    res += '<a id="l-'+item.IMEI+'" href="#" onclick="Detail(\''+item.IMEI+'\');" class="list-group-item"><p class="list-group-item-heading"><b>IMEI : '+item.IMEI+'</b></p><p class="list-group-item-text">'+item.Client+'</p></a>';
+			    res += '<a id="l-'+item.IMEI+'" href="#" onclick="Detail(\''+item.IMEI+'\');" class="list-group-item"><p class="list-group-item-heading"><b>ID: '+item.ID+'</b></p><p class="list-group-item-text">IMEI: '+item.IMEI+'</p></a>';
 			})
 			$("#listcontact").html(res);
 		});
@@ -169,6 +175,7 @@
 
 				$.get("{{url('modem')}}/"+id, function(data,status){
 					location.hash = id;
+					$('input[name="ID"]').val(data['ID']);
 					$('input[name="imei"]').val(data['IMEI']);
 					$('#client').html(data['Client']);
 					$('input[name="update"]').val(data['UpdatedInDB']);

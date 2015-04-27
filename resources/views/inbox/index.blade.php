@@ -88,7 +88,8 @@
 									  <div class="form-group">
 									    <label for="text" class="col-sm-2 control-label">Isi SMS</label>
 									    <div class="col-sm-10">
-									      <textarea id="msg0" class="form-control input-sm" id="text" placeholder="Isi SMS" required>{{Input::get('text')}}</textarea>
+									      <textarea id="msg0" onkeyup="countText(event, this.value)" class="form-control input-sm" id="text" placeholder="Isi SMS" required>{{Input::get('text')}}</textarea>
+									      <div class="help-block" id="textcount"></div>
 									    </div>
 									  </div>
 
@@ -158,8 +159,9 @@
 
 							</div>
 							<div id="form" class="input-group">
-					          <textarea id="msg" name="msg" class="form-control" style="resize:none" rows="2" required></textarea>
-					          <a class="input-group-addon btn btn-primary" onclick="Send(window.location.hash.substring(1));"><span class="glyphicon glyphicon-send" ></span> Kirim</a>
+					          <textarea id="msg" onkeyup="countText(event, this.value)" name="msg" class="form-control" style="resize:none" rows="2" required></textarea>
+					          
+					          <a class="input-group-addon btn btn-primary" onclick="Send(window.location.hash.substring(1));"><span class="glyphicon glyphicon-send" ></span> Kirim <div class="help-block" id="textcount2"></div></a>
 					        </div>
 							
 						</div>
@@ -218,6 +220,18 @@
 			$("#action").val('0');
 		}
 	});
+
+// count msg
+function countText (e, val) {
+	var res = 0;
+	res = val.length;
+	if(res >= 160){
+		res = res+' / '+Math.ceil(res / 160);
+	}
+	// console.log(res);
+	$('#textcount').html('Karakter: '+res);
+	$('#textcount2').html(res);
+}
 
 //AUTOCOMPLETE destination number
 	$(function() {
@@ -306,7 +320,7 @@
 		if(localStorage.getItem("inboxList-"+filter)){
 			dt = JSON.parse(localStorage.getItem("inboxList-"+filter));
 
-			console.log(dt);
+			// console.log(dt);
 			showListData(dt);
 		}
 		else{
@@ -444,7 +458,7 @@
 						if (data[i]['udh']!='') {tag='div';}else{tag='div';}
 						var auth = data[i]['author'].split('.');
 						var author = link = '';
-						console.log(auth[0]);
+						// console.log(auth[0]);
 						if(auth[0]=='apis'){
 							author = data[i]['apis_name'];
 							link = './api#'+auth[1];
