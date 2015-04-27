@@ -44,6 +44,15 @@ Route::get('inbox/export/{hp}','InboxController@export');
 /*
 * Twitter Route
 */
+
+Route::get('twitter', function()
+{
+    // return Twitter::getUserTimeline(['screen_name' => 'thujohn', 'count' => 20, 'format' => 'json']);
+    // return Twitter::getHomeTimeline(['count' => 20, 'format' => 'json']);
+    // return Twitter::getMentionsTimeline(['count' => 20, 'format' => 'json']);
+    return Twitter::postTweet(['status' => 'Aku maho', 'format' => 'json']);
+});
+
 Route::get('twitter/login', ['as' => 'twitter.login', function(){
     // your SIGN IN WITH TWITTER  button should point to this route
     $sign_in_twitter = true;
