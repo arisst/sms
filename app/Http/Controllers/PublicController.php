@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use sms\Api;
 use sms\Outbox;
+use sms\Ews;
 
 use sms\Http\Controllers\KeywordController as KeywordController;
 
@@ -40,6 +41,58 @@ class PublicController extends Controller {
 		else
 		{
 			abort(403);
+		}
+	}
+
+	public function ews()
+	{
+		$app_id = \Input::get('app_id');
+		$name = \Input::get('name');
+		$region = \Input::get('region');
+		$scale = \Input::get('scale');
+		$phone = \Input::get('phone');
+		$ip = \Input::get('ip');
+
+		$app_id_in_db = Ews::where('app_id',$app_id)->first();
+		if($app_id_in_db) //perform update
+		{
+			$ews = Ews::find($app_id_in_db['id']);
+			$ews->app_id = $app_id;
+			$ews->name = $name;
+			$ews->region = $region;
+			$ews->scale = $scale;
+			$ews->phone = $phone;
+			$ews->ip = \Request::getClientIp();
+
+			if($ews->save()){
+				return 'Update success';
+			}
+			else{
+				return 'Update error';
+			}
+		}
+		else //perform create
+		{
+			if($app_id && $name && $region && $scale && $phone)
+			{
+				$ews = new Ews;
+				$ews->app_id = $app_id;
+				$ews->name = $name;
+				$ews->region = $region;
+				$ews->scale = $scale;
+				$ews->phone = $phone;
+				$ews->ip = \Request::getClientIp();
+
+				if($ews->save()){
+					return 'Create success';
+				}
+				else{
+					return 'Create error';
+				}
+			}
+			else{
+				return 'Missing parameters';
+			}
 		}
 	}
 

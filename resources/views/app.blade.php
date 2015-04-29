@@ -46,6 +46,7 @@
 						</li>
 						<li @if(Request::is('keyword*')) class="active" @endif><a href="{{url('keyword')}}">KATA KUNCI</a></li>
 						<li @if(Request::is('api*')) class="active" @endif><a href="{{url('api')}}">API</a></li>
+						<li @if(Request::is('ews*')) class="active" @endif><a href="{{url('ews')}}">EWS</a></li>
 						<li @if(Request::is('twitter*')) class="active" @endif><a href="{{url('twitter')}}">TWITTER</a></li>
 
 						@if(Auth::user()->group==1)
