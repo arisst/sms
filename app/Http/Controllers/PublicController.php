@@ -91,7 +91,7 @@ class PublicController extends Controller {
 				}
 			}
 			else{
-				return 'Missing parameters';
+				return 'Missing parameters. Ex:'.url('ewsapp').'?app_id=EWS001&name=Aris+Setyono&region=TRENGGALEK&scale=4&phone=085259838599';
 			}
 		}
 	}
