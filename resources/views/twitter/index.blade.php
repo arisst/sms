@@ -10,7 +10,7 @@
 				<div class="panel-heading">
 					Twitter
 					<div class="pull-right">
-						<a class="btn-sm" title="Tambah group baru" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-plus"></span>Tambah baru</a>
+						<a class="btn-sm" title="Tampilkan timeline twitter" href="#" onclick="firstLoad()"><span style="color:green" class="glyphicon glyphicon-list"></span>Timeline</a>
 					</div>
 				</div>
 
@@ -173,10 +173,10 @@
 		    }
 		});
 
-		$.get("{{url('twitter/timeline')}}", function(data,status){
+		$.get("{{url('twitters/timeline')}}", function(data,status){
 		    var res = '';
 		    var data = $.parseJSON(data);
-		    $('#title').html('Twitter : '+data[0]['user']['name']);
+		    $('#title').html('Twitter : <a target="_blank" href="https://twitter.com/'+data[0]['user']['screen_name']+'">'+data[0]['user']['name']+'</a>');
 		    $.each(data, function(i, item) 
 		    {
 			    console.log(item);

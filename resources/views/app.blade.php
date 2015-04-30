@@ -29,14 +29,14 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="{{url('/')}}">SMS</a>
+				<a class="navbar-brand" href="{{url('/')}}">SMSCenter</a>
 			</div>
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
 				@if(Auth::check())
 					<ul class="nav navbar-nav">
-						<li @if(Request::is('inbox*')) class="active" @endif><a href="{{url('inbox')}}">KOTAK MASUK</a></li>
+						<li @if(Request::is('inbox*')) class="active" @endif><a href="{{url('inbox')}}">SMS</a></li>
 						<li class="dropdown @if(Request::is('contact*')||Request::is('group*')) active @endif">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">KONTAK <span class="caret"></span></a>
 								<ul class="dropdown-menu" role="menu">
@@ -46,8 +46,8 @@
 						</li>
 						<li @if(Request::is('keyword*')) class="active" @endif><a href="{{url('keyword')}}">KATA KUNCI</a></li>
 						<li @if(Request::is('api*')) class="active" @endif><a href="{{url('api')}}">API</a></li>
-						<li @if(Request::is('ews*')) class="active" @endif><a href="{{url('ews')}}">EWS</a></li>
-						<li @if(Request::is('twitter*')) class="active" @endif><a href="{{url('twitter')}}">TWITTER</a></li>
+						{{-- <li @if(Request::is('ews*')) class="active" @endif><a href="{{url('ews')}}">EWS</a></li> --}}
+						<li @if(Request::is('twitters*')) class="active" @endif><a href="{{url('twitters')}}">TWITTER</a></li>
 
 						@if(Auth::user()->group==1)
 							<li class="dropdown @if(Request::is('modem*')) active @endif">
@@ -68,9 +68,14 @@
 						<li><a href="{{url('auth/register')}}">DAFTAR</a></li>
 					@else
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} @if(Session::has('access_token')) {{'+ @'.Session::get('access_token')['screen_name']}} @endif <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="{{url('profile')}}">Edit Profil</a></li>
+								@if(Session::has('access_token'))
+									<li><a href="{{url('twitter/logout')}}">Putuskan twitter</a></li>
+								@else
+									<li><a href="{{url('twitter/connect')}}">Hubungkan twitter</a></li>
+								@endif
 								<li><a href="{{url('auth/logout')}}">Keluar</a></li>
 							</ul>
 						</li>

@@ -152,7 +152,13 @@
 
 									  <div class="form-group">
 									    <div class="col-sm-offset-2 col-sm-10">
-									      <a id="submit-button" onclick="Send()" class="btn btn-default btn-sm">Kirim</a>
+									    @if(Session::has('access_token'))
+									    	<btn class="btn btn-info btn-xs">Terhubung dengan {{'@'.Session::get('access_token')['screen_name']}} </btn><br>
+									    	<input type="checkbox" name="twit" value="1"> Twit pesan ini?
+									    @else
+									    	<a class="btn btn-info btn-xs" href="{{url('twitter/connect')}}">Hubungkan dengan twitter?</a><br>
+									    @endif
+									    	<a id="submit-button" onclick="Send()" class="btn btn-default btn-sm">Kirim</a>
 									    </div>
 									  </div>
 									</form>

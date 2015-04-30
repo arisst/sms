@@ -46,10 +46,10 @@ Route::get('inbox/export/{hp}','InboxController@export');
 /*
 * Twitter Route
 */
-Route::controller('twitter', 'TwitterController');
+Route::controller('twitters', 'TwitterController');
 
 
-Route::get('atwitter/login', ['as' => 'twitter.login', function(){
+Route::get('twitter/connect', ['as' => 'twitter.login', function(){
     // your SIGN IN WITH TWITTER  button should point to this route
     $sign_in_twitter = true;
     $force_login = false;
@@ -72,7 +72,7 @@ Route::get('atwitter/login', ['as' => 'twitter.login', function(){
     return Redirect::route('twitter.error');
 }]);
 
-Route::get('atwitter/callback', ['as' => 'twitter.callback', function() {
+Route::get('twitter/callback', ['as' => 'twitter.callback', function() {
     // You should set this route on your Twitter Application settings as the callback
     // https://apps.twitter.com/app/YOUR-APP-ID/settings
     if (Session::has('oauth_request_token'))
@@ -120,11 +120,11 @@ Route::get('atwitter/callback', ['as' => 'twitter.callback', function() {
     }
 }]);
 
-Route::get('atwitter/error', ['as' => 'twitter.error', function(){
+Route::get('twitter/error', ['as' => 'twitter.error', function(){
     // Something went wrong, add your own error handling here
 }]);
 
-Route::get('atwitter/logout', ['as' => 'twitter.logout', function(){
+Route::get('twitter/logout', ['as' => 'twitter.logout', function(){
     Session::forget('access_token');
     return Redirect::to('/')->with('flash_notice', 'You\'ve successfully logged out!');
 }]);

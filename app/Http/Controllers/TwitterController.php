@@ -14,8 +14,12 @@ class TwitterController extends Controller {
 	    // return Twitter::getHomeTimeline(['count' => 20, 'format' => 'json']);
 	    // return Twitter::getMentionsTimeline(['count' => 20, 'format' => 'json']);
 	    // return Twitter::postTweet(['status' => 'Test', 'format' => 'json']);
-
-	    return view('twitter.index');
+		if(\Session::has('access_token')){
+		    return view('twitter.index');
+		}
+		else{
+			return redirect('twitter/connect');
+		}
 	}
 
 	public function getToken()
@@ -29,7 +33,9 @@ class TwitterController extends Controller {
 
 	public function getTimeline()
 	{
-		return \Twitter::getUserTimeline(['screen_name' => 'infobencana', 'count' => 20, 'format' => 'json']);
+		$screen_name = \Session::get('access_token')['screen_name'];
+	    // return \Twitter::getHomeTimeline(['count' => 20, 'format' => 'json']);
+		return \Twitter::getUserTimeline(['screen_name' => $screen_name, 'count' => 20, 'format' => 'json']);
 	}
 
 }
